@@ -1,0 +1,205 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Crypto Agent Hub - Project Standards
+
+This document outlines the coding standards, architecture patterns, and development practices for the Crypto Agent Hub project.
+
+## Project Architecture
+
+### Overview
+The project follows a fullstack architecture with clear separation of concerns:
+
+- **Frontend**: React + TypeScript + Vite application ([frontend/](mdc:frontend))
+- **Backend**: Python LangGraph agent with FastAPI ([backend/](mdc:backend))
+- **MCP Servers**: Model Context Protocol servers for external integrations ([mcp-servers/](mdc:mcp-servers))
+
+### Core Dependencies
+- Frontend: React 19, TypeScript, Tailwind CSS, Radix UI, LangChain SDK
+- Backend: LangGraph, LangChain, FastAPI, Google Gemini AI
+- MCP: LangChain MCP Adapters for tool integration
+
+## Frontend Standards
+
+### Technology Stack
+- **Framework**: React 19 with TypeScript
+- **Build Tool**: Vite with SWC plugin
+- **Styling**: Tailwind CSS 4.x with Radix UI components
+- **Routing**: React Router DOM
+- **State Management**: React hooks and context
+- **Package Manager**: npm
+
+### File Structure Conventions
+```
+frontend/src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Base UI components (shadcn/ui)
+│   └── feature/        # Feature-specific components
+├── pages/              # Route components
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions and configurations
+├── types/              # TypeScript type definitions
+└── styles/             # Global styles and Tailwind config
+```
+
+### Component Standards
+- Use functional components with TypeScript
+- Implement proper prop typing with interfaces
+- Follow the composition pattern for complex components
+- Use Radix UI primitives for accessibility
+- Implement responsive design with Tailwind CSS classes
+
+### LangChain Integration
+- Use `@langchain/langgraph-sdk` for backend communication
+- Implement proper error handling for agent interactions
+- Handle streaming responses for real-time updates
+- Type LangChain objects properly for type safety
+
+## Backend Standards
+
+### Technology Stack
+- **Framework**: LangGraph with FastAPI
+- **Language**: Python 3.11+
+- **AI Models**: Google Gemini (google-genai)
+- **Package Management**: setuptools with pyproject.toml
+- **Development**: LangGraph CLI for local development
+
+### File Structure Conventions
+```
+backend/src/
+├── agent/              # LangGraph agent implementation
+│   ├── graph.py        # Main agent graph definition
+│   ├── nodes/          # Individual graph nodes
+│   └── tools/          # Agent tools and functions
+├── api/                # FastAPI routes and endpoints
+├── config/             # Configuration and settings
+├── models/             # Data models and schemas
+└── utils/              # Utility functions
+```
+
+### Agent Development Standards
+- Define clear node functions with proper typing
+- Use LangGraph's state management patterns
+- Implement proper error handling and fallbacks
+- Follow the reflection and iterative refinement pattern
+- Use structured outputs for consistent responses
+
+### Python Code Standards
+- Follow Google docstring conventions
+- Use type hints for all function parameters and returns
+- Implement proper logging for debugging
+- Use environment variables for configuration
+- Follow PEP 8 with Ruff linting rules from [pyproject.toml](mdc:backend/pyproject.toml)
+
+### LangGraph Patterns
+- Use StateGraph for complex multi-step processes
+- Implement conditional edges for decision points
+- Use checkpointing for conversation persistence
+- Handle streaming responses for real-time UI updates
+
+## MCP Server Standards
+
+### Architecture
+- Each MCP server should be in its own directory under [mcp-servers/](mdc:mcp-servers)
+- Use FastMCP for rapid development and prototyping
+- Support both stdio and streamable HTTP transports
+- Follow the LangChain MCP Adapters pattern from [temp/langchain-mcp-adapters.md](mdc:temp/langchain-mcp-adapters.md)
+
+### File Structure for Each MCP Server
+```
+mcp-servers/[server-name]/
+├── main.py             # MCP server implementation
+├── pyproject.toml      # Python dependencies and metadata
+├── README.md           # Server documentation and usage
+├── LICENSE             # License file
+└── .python-version     # Python version specification
+```
+
+### MCP Server Development Standards
+- Use descriptive tool names and clear docstrings
+- Implement proper error handling and validation
+- Support both synchronous and asynchronous operations
+- Provide comprehensive tool descriptions for AI agents
+- Follow the FastMCP pattern for tool registration
+
+### Tool Integration
+- Use `langchain_mcp_adapters.tools.load_mcp_tools()` for integration
+- Implement `MultiServerMCPClient` for multiple server management
+- Support both stdio and HTTP transport protocols
+- Ensure tools are properly typed for LangChain compatibility
+
+## Development Workflow
+
+### Environment Setup
+1. Use Python 3.11+ for backend development
+2. Use Node.js 18+ for frontend development
+3. Set up environment variables in `.env` files
+4. Use `make dev` for concurrent frontend/backend development
+
+### Code Quality
+- Run ESLint for frontend TypeScript code
+- Use Ruff for Python code formatting and linting
+- Implement proper TypeScript strict mode
+- Write comprehensive docstrings and comments
+
+### Git Standards
+- Use descriptive commit messages
+- Create feature branches for new functionality
+- Submit pull requests for code review
+- Maintain clean commit history
+
+## Deployment Standards
+
+### Docker Configuration
+- Use multi-stage builds for production images
+- Separate frontend build from backend runtime
+- Implement proper health checks
+- Use environment-specific configurations
+
+### Production Considerations
+- Use Redis for LangGraph state persistence
+- Implement proper logging and monitoring
+- Use HTTPS for all external communications
+- Implement rate limiting for API endpoints
+
+### MCP Server Deployment
+- Deploy MCP servers as independent services
+- Use HTTP transport for scalable deployments
+- Implement proper authentication for sensitive tools
+- Monitor server health and performance
+
+## Security Guidelines
+
+### API Security
+- Validate all inputs to prevent injection attacks
+- Use environment variables for sensitive keys
+- Implement proper CORS policies
+- Rate limit API endpoints
+
+### MCP Security
+- Validate tool inputs and outputs
+- Implement proper authentication for external APIs
+- Use secure communication protocols
+- Audit tool permissions and capabilities
+
+## Performance Guidelines
+
+### Frontend Performance
+- Implement lazy loading for route components
+- Use React.memo for expensive components
+- Optimize bundle size with tree shaking
+- Implement proper caching strategies
+
+### Backend Performance
+- Use async/await for I/O operations
+- Implement connection pooling for databases
+- Cache frequently accessed data
+- Monitor memory usage in long-running agents
+
+### MCP Performance
+- Implement connection reuse for HTTP transport
+- Use connection pooling for database tools
+- Cache expensive computations
+- Monitor tool execution times
