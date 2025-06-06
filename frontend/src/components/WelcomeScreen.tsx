@@ -1,19 +1,24 @@
-import { InputForm } from "./InputForm";
+import { InputForm } from './InputForm';
 
 interface WelcomeScreenProps {
   handleSubmit: (
     submittedInputValue: string,
     effort: string,
-    model: string
+    model: string,
+    agentId: string
   ) => void;
   onCancel: () => void;
   isLoading: boolean;
+  selectedAgent: string;
+  onAgentChange: (agentId: string) => void;
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   handleSubmit,
   onCancel,
   isLoading,
+  selectedAgent,
+  onAgentChange,
 }) => (
   <div className="flex flex-col items-center justify-center text-center px-4 flex-1 w-full max-w-3xl mx-auto gap-4">
     <div>
@@ -30,6 +35,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         isLoading={isLoading}
         onCancel={onCancel}
         hasHistory={false}
+        selectedAgent={selectedAgent}
+        onAgentChange={onAgentChange}
       />
     </div>
     <p className="text-xs text-neutral-500">

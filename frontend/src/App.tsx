@@ -1,9 +1,10 @@
-import { useStream } from "@langchain/langgraph-sdk/react";
-import type { Message } from "@langchain/langgraph-sdk";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { ProcessedEvent } from "@/components/ActivityTimeline";
-import { WelcomeScreen } from "@/components/WelcomeScreen";
-import { ChatMessagesView } from "@/components/ChatMessagesView";
+import { useStream } from '@langchain/langgraph-sdk/react';
+import type { Message } from '@langchain/langgraph-sdk';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { ProcessedEvent } from '@/components/ActivityTimeline';
+import { WelcomeScreen } from '@/components/WelcomeScreen';
+import { ChatMessagesView } from '@/components/ChatMessagesView';
+import { AVAILABLE_AGENTS } from '@/types/agents';
 
 export default function App() {
   const [processedEventsTimeline, setProcessedEventsTimeline] = useState<
@@ -12,8 +13,34 @@ export default function App() {
   const [historicalActivities, setHistoricalActivities] = useState<
     Record<string, ProcessedEvent[]>
   >({});
+  const [selectedAgentId, setSelectedAgentId] = useState('chatbot');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const hasFinalizeEventOccurredRef = useRef(false);
+
+  const validateAgentId = useCallback((agentId: string): string => {
+    const isValidAgent = AVAILABLE_AGENTS.some((agent) => agent.id === agentId);
+    if (!isValidAgent) {
+      console.warn(`Invalid agent ID: ${agentId}, falling back to default`);
+      return 'chatbot';
+    }
+    return agentId;
+  }, []);
+
+  const handleAgentSwitch = useCallback(
+    (newAgentId: string) => {
+      if (newAgentId !== selectedAgentId) {
+        setSelectedAgentId(newAgentId);
+        setProcessedEventsTimeline([]);
+        setHistoricalActivities({});
+        hasFinalizeEventOccurredRef.current = false;
+        // For now, just reload the page when switching agents
+        // This ensures clean state reset without complex thread management
+        console.log('switching agent');
+        window.location.reload();
+      }
+    },
+    [selectedAgentId]
+  );
 
   const thread = useStream<{
     messages: Message[];
@@ -22,49 +49,85 @@ export default function App() {
     reasoning_model: string;
   }>({
     apiUrl: import.meta.env.DEV
-      ? "http://localhost:2024"
-      : "http://localhost:8123",
-    assistantId: "agent",
-    messagesKey: "messages",
-    onFinish: (event: any) => {
+      ? 'http://localhost:2024'
+      : 'http://localhost:8123',
+    assistantId: selectedAgentId,
+    messagesKey: 'messages',
+    onFinish: (event: unknown) => {
       console.log(event);
     },
-    onUpdateEvent: (event: any) => {
-      let processedEvent: ProcessedEvent | null = null;
-      if (event.generate_query) {
-        processedEvent = {
-          title: "Generating Search Queries",
-          data: event.generate_query.query_list.join(", "),
-        };
-      } else if (event.web_research) {
-        const sources = event.web_research.sources_gathered || [];
-        const numSources = sources.length;
-        const uniqueLabels = [
-          ...new Set(sources.map((s: any) => s.label).filter(Boolean)),
-        ];
-        const exampleLabels = uniqueLabels.slice(0, 3).join(", ");
-        processedEvent = {
-          title: "Web Research",
-          data: `Gathered ${numSources} sources. Related to: ${
-            exampleLabels || "N/A"
-          }.`,
-        };
-      } else if (event.reflection) {
-        processedEvent = {
-          title: "Reflection",
-          data: event.reflection.is_sufficient
-            ? "Search successful, generating final answer."
-            : `Need more information, searching for ${event.reflection.follow_up_queries.join(
-                ", "
-              )}`,
-        };
-      } else if (event.finalize_answer) {
-        processedEvent = {
-          title: "Finalizing Answer",
-          data: "Composing and presenting the final answer.",
-        };
-        hasFinalizeEventOccurredRef.current = true;
+    onUpdateEvent: (event: Record<string, unknown>) => {
+      // Only process events for agents that have showActivityTimeline enabled
+      const currentAgent = AVAILABLE_AGENTS.find(
+        (agent) => agent.id === selectedAgentId
+      );
+
+      if (!currentAgent?.showActivityTimeline) {
+        return;
       }
+
+      let processedEvent: ProcessedEvent | null = null;
+
+      if (selectedAgentId === 'agent') {
+        // Existing research agent events
+        if (
+          'generate_query' in event &&
+          event.generate_query &&
+          typeof event.generate_query === 'object'
+        ) {
+          const generateQuery = event.generate_query as {
+            query_list: string[];
+          };
+          processedEvent = {
+            title: 'Generating Search Queries',
+            data: generateQuery.query_list.join(', '),
+          };
+        } else if (
+          'web_research' in event &&
+          event.web_research &&
+          typeof event.web_research === 'object'
+        ) {
+          const webResearch = event.web_research as {
+            sources_gathered?: { label?: string }[];
+          };
+          const sources = webResearch.sources_gathered || [];
+          const numSources = sources.length;
+          const uniqueLabels = [
+            ...new Set(sources.map((s) => s.label).filter(Boolean)),
+          ];
+          const exampleLabels = uniqueLabels.slice(0, 3).join(', ');
+          processedEvent = {
+            title: 'Web Research',
+            data: `Gathered ${numSources} sources. Related to: ${
+              exampleLabels || 'N/A'
+            }.`,
+          };
+        } else if (
+          'reflection' in event &&
+          event.reflection &&
+          typeof event.reflection === 'object'
+        ) {
+          const reflection = event.reflection as {
+            is_sufficient: boolean;
+            follow_up_queries: string[];
+          };
+          processedEvent = {
+            title: 'Reflection',
+            data: reflection.is_sufficient
+              ? 'Search successful, generating final answer.'
+              : `Need more information, searching for ${reflection.follow_up_queries.join(
+                  ', '
+                )}`,
+          };
+        } else if ('finalize_answer' in event) {
+          processedEvent = {
+            title: 'Finalizing Answer',
+            data: 'Composing and presenting the final answer.',
+          };
+          hasFinalizeEventOccurredRef.current = true;
+        }
+      }
+
       if (processedEvent) {
         setProcessedEventsTimeline((prevEvents) => [
           ...prevEvents,
@@ -77,7 +140,7 @@ export default function App() {
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollViewport = scrollAreaRef.current.querySelector(
-        "[data-radix-scroll-area-viewport]"
+        '[data-radix-scroll-area-viewport]'
       );
       if (scrollViewport) {
         scrollViewport.scrollTop = scrollViewport.scrollHeight;
@@ -92,7 +155,7 @@ export default function App() {
       thread.messages.length > 0
     ) {
       const lastMessage = thread.messages[thread.messages.length - 1];
-      if (lastMessage && lastMessage.type === "ai" && lastMessage.id) {
+      if (lastMessage && lastMessage.type === 'ai' && lastMessage.id) {
         setHistoricalActivities((prev) => ({
           ...prev,
           [lastMessage.id!]: [...processedEventsTimeline],
@@ -103,48 +166,66 @@ export default function App() {
   }, [thread.messages, thread.isLoading, processedEventsTimeline]);
 
   const handleSubmit = useCallback(
-    (submittedInputValue: string, effort: string, model: string) => {
+    (
+      submittedInputValue: string,
+      effort: string,
+      model: string,
+      agentId: string
+    ) => {
+      const validAgentId = validateAgentId(agentId);
       if (!submittedInputValue.trim()) return;
+      console.log('submittedInputValue', submittedInputValue);
+
+      handleAgentSwitch(validAgentId);
       setProcessedEventsTimeline([]);
       hasFinalizeEventOccurredRef.current = false;
-
-      // convert effort to, initial_search_query_count and max_research_loops
-      // low means max 1 loop and 1 query
-      // medium means max 3 loops and 3 queries
-      // high means max 10 loops and 5 queries
-      let initial_search_query_count = 0;
-      let max_research_loops = 0;
-      switch (effort) {
-        case "low":
-          initial_search_query_count = 1;
-          max_research_loops = 1;
-          break;
-        case "medium":
-          initial_search_query_count = 3;
-          max_research_loops = 3;
-          break;
-        case "high":
-          initial_search_query_count = 5;
-          max_research_loops = 10;
-          break;
-      }
 
       const newMessages: Message[] = [
         ...(thread.messages || []),
         {
-          type: "human",
+          type: 'human',
           content: submittedInputValue,
           id: Date.now().toString(),
         },
       ];
-      thread.submit({
-        messages: newMessages,
-        initial_search_query_count: initial_search_query_count,
-        max_research_loops: max_research_loops,
-        reasoning_model: model,
-      });
+
+      // Only pass research-specific parameters for research agent
+      if (validAgentId === 'agent') {
+        // convert effort to, initial_search_query_count and max_research_loops
+        // low means max 1 loop and 1 query
+        // medium means max 3 loops and 3 queries
+        // high means max 10 loops and 5 queries
+        let initial_search_query_count = 0;
+        let max_research_loops = 0;
+        switch (effort) {
+          case 'low':
+            initial_search_query_count = 1;
+            max_research_loops = 1;
+            break;
+          case 'medium':
+            initial_search_query_count = 3;
+            max_research_loops = 3;
+            break;
+          case 'high':
+            initial_search_query_count = 5;
+            max_research_loops = 10;
+            break;
+        }
+
+        thread.submit({
+          messages: newMessages,
+          initial_search_query_count: initial_search_query_count,
+          max_research_loops: max_research_loops,
+          reasoning_model: model,
+        });
+      } else {
+        // For chatbot, only send messages
+        thread.submit({
+          messages: newMessages,
+        });
+      }
     },
-    [thread]
+    [validateAgentId, handleAgentSwitch, thread]
   );
 
   const handleCancel = useCallback(() => {
@@ -157,7 +238,7 @@ export default function App() {
       <main className="flex-1 flex flex-col overflow-hidden max-w-4xl mx-auto w-full">
         <div
           className={`flex-1 overflow-y-auto ${
-            thread.messages.length === 0 ? "flex" : ""
+            thread.messages.length === 0 ? 'flex' : ''
           }`}
         >
           {thread.messages.length === 0 ? (
@@ -165,6 +246,8 @@ export default function App() {
               handleSubmit={handleSubmit}
               isLoading={thread.isLoading}
               onCancel={handleCancel}
+              selectedAgent={selectedAgentId}
+              onAgentChange={setSelectedAgentId}
             />
           ) : (
             <ChatMessagesView
@@ -175,6 +258,8 @@ export default function App() {
               onCancel={handleCancel}
               liveActivityEvents={processedEventsTimeline}
               historicalActivities={historicalActivities}
+              selectedAgentId={selectedAgentId}
+              onAgentChange={setSelectedAgentId}
             />
           )}
         </div>
