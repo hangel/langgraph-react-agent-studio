@@ -23,6 +23,11 @@ class OverallState(TypedDict):
     reasoning_model: str
 
 
+class ChatbotState(TypedDict):
+    """State for basic chatbot functionality."""
+    messages: Annotated[list, add_messages]
+
+
 class ReflectionState(TypedDict):
     is_sufficient: bool
     knowledge_gap: str

@@ -58,3 +58,41 @@ class Configuration(BaseModel):
         values = {k: v for k, v in raw_values.items() if v is not None}
 
         return cls(**values)
+
+
+class ChatbotConfiguration(BaseModel):
+    """The configuration for the basic chatbot."""
+
+    chat_model: str = Field(
+        default="gemini-2.0-flash",
+        metadata={
+            "description": "The name of the language model to use for the chatbot responses."
+        },
+    )
+
+    temperature: float = Field(
+        default=0.7,
+        metadata={
+            "description": "The temperature setting for response generation (0.0-1.0)."
+        },
+    )
+
+    @classmethod
+    def from_runnable_config(
+        cls, config: Optional[RunnableConfig] = None
+    ) -> "ChatbotConfiguration":
+        """Create a ChatbotConfiguration instance from a RunnableConfig."""
+        configurable = (
+            config["configurable"] if config and "configurable" in config else {}
+        )
+
+        # Get raw values from environment or config
+        raw_values: dict[str, Any] = {
+            name: os.environ.get(name.upper(), configurable.get(name))
+            for name in cls.model_fields.keys()
+        }
+
+        # Filter out None values
+        values = {k: v for k, v in raw_values.items() if v is not None}
+
+        return cls(**values)
