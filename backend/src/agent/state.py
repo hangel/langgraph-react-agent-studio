@@ -28,6 +28,11 @@ class ChatbotState(TypedDict):
     messages: Annotated[list, add_messages]
 
 
+class MathAgentState(TypedDict):
+    """State for math agent functionality."""
+    messages: Annotated[list, add_messages]
+
+
 class ReflectionState(TypedDict):
     is_sufficient: bool
     knowledge_gap: str
