@@ -15,10 +15,11 @@ import {
 import { AVAILABLE_AGENTS } from '@/types/agents';
 
 // Markdown component props type from former ReportView
+
 type MdComponentProps = {
   className?: string;
   children?: ReactNode;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 // Markdown components (from former ReportView.tsx)

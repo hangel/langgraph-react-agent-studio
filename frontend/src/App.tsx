@@ -68,8 +68,8 @@ export default function App() {
 
       let processedEvent: ProcessedEvent | null = null;
 
-      if (selectedAgentId === 'agent') {
-        // Existing research agent events
+      if (selectedAgentId === 'deep_researcher') {
+        // Deep researcher agent events
         if (
           'generate_query' in event &&
           event.generate_query &&
@@ -189,8 +189,8 @@ export default function App() {
         },
       ];
 
-      // Only pass research-specific parameters for research agent
-      if (validAgentId === 'agent') {
+      // Only pass research-specific parameters for deep researcher
+      if (validAgentId === 'deep_researcher') {
         // convert effort to, initial_search_query_count and max_research_loops
         // low means max 1 loop and 1 query
         // medium means max 3 loops and 3 queries

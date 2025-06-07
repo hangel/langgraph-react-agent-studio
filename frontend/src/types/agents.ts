@@ -9,11 +9,11 @@ export interface Agent {
 
 export const AVAILABLE_AGENTS: Agent[] = [
   {
-    id: 'agent',
-    name: 'Research Agent',
-    description: 'Deep research with web search and reflection',
+    id: 'deep_researcher',
+    name: 'Deep Researcher',
+    description: 'Advanced deep research with enhanced analysis',
     icon: 'search',
-    capabilities: ['Web Research', 'Deep Research'],
+    capabilities: ['Advanced Web Research', 'Deep Analysis'],
     showActivityTimeline: true,
   },
   {
