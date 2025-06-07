@@ -13,6 +13,78 @@ import {
   ProcessedEvent,
 } from '@/components/ActivityTimeline'; // Assuming ActivityTimeline is in the same dir or adjust path
 import { AVAILABLE_AGENTS } from '@/types/agents';
+import { ToolMessageDisplay } from '@/components/ToolMessageDisplay';
+import {
+  extractToolCallsFromMessage,
+  findToolMessageForCall,
+} from '@/types/messages';
+import { ToolCall } from '@/types/tools';
+
+// Group messages to combine AI responses with their tool calls and results
+interface MessageGroup {
+  id: string;
+  type: 'human' | 'ai_complete';
+  messages: Message[];
+  primaryMessage: Message;
+  toolCalls: ToolCall[];
+  toolResults: Message[];
+}
+
+const groupMessages = (messages: Message[]): MessageGroup[] => {
+  const groups: MessageGroup[] = [];
+  let currentGroup: MessageGroup | null = null;
+
+  for (const message of messages) {
+    if (message.type === 'human') {
+      // Human messages are always standalone
+      groups.push({
+        id: message.id || `human-${Date.now()}`,
+        type: 'human',
+        messages: [message],
+        primaryMessage: message,
+        toolCalls: [],
+        toolResults: [],
+      });
+      currentGroup = null;
+    } else if (message.type === 'ai') {
+      // Start a new AI group or continue existing one
+      const toolCalls = extractToolCallsFromMessage(message);
+
+      if (!currentGroup || currentGroup.type !== 'ai_complete') {
+        // Create new AI group
+        currentGroup = {
+          id: message.id || `ai-${Date.now()}`,
+          type: 'ai_complete',
+          messages: [message],
+          primaryMessage: message,
+          toolCalls: toolCalls,
+          toolResults: [],
+        };
+        groups.push(currentGroup);
+      } else {
+        // Add to existing AI group (for cases with multiple AI messages)
+        currentGroup.messages.push(message);
+        currentGroup.toolCalls.push(...toolCalls);
+        // Update primary message to the latest one with content
+        if (
+          message.content &&
+          typeof message.content === 'string' &&
+          message.content.trim()
+        ) {
+          currentGroup.primaryMessage = message;
+        }
+      }
+    } else if (message.type === 'tool') {
+      // Tool results belong to the current AI group
+      if (currentGroup && currentGroup.type === 'ai_complete') {
+        currentGroup.toolResults.push(message);
+        currentGroup.messages.push(message);
+      }
+    }
+  }
+
+  return groups;
+};
 
 // Markdown components (from former ReportView.tsx)
 const mdComponents = {
@@ -187,15 +259,16 @@ const mdComponents = {
 
 // Props for HumanMessageBubble
 interface HumanMessageBubbleProps {
-  message: Message;
+  group: MessageGroup;
   mdComponents: typeof mdComponents;
 }
 
 // HumanMessageBubble Component
 const HumanMessageBubble: React.FC<HumanMessageBubbleProps> = ({
-  message,
+  group,
   mdComponents,
 }) => {
+  const message = group.primaryMessage;
   return (
     <div
       className={`text-white rounded-3xl break-words min-h-7 bg-neutral-700 max-w-[100%] sm:max-w-[90%] px-4 pt-3 rounded-br-lg`}
@@ -211,33 +284,50 @@ const HumanMessageBubble: React.FC<HumanMessageBubbleProps> = ({
 
 // Props for AiMessageBubble
 interface AiMessageBubbleProps {
-  message: Message;
+  group: MessageGroup;
   historicalActivity: ProcessedEvent[] | undefined;
   liveActivity: ProcessedEvent[] | undefined;
-  isLastMessage: boolean;
+  isLastGroup: boolean;
   isOverallLoading: boolean;
   mdComponents: typeof mdComponents;
   handleCopy: (text: string, messageId: string) => void;
   copiedMessageId: string | null;
   selectedAgentId: string;
+  allMessages: Message[];
 }
 
 // AiMessageBubble Component
 const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
-  message,
+  group,
   historicalActivity,
   liveActivity,
-  isLastMessage,
+  isLastGroup,
   isOverallLoading,
   mdComponents,
   handleCopy,
   copiedMessageId,
   selectedAgentId,
+  allMessages,
 }) => {
+  // Tool message state
+  const [expandedTools, setExpandedTools] = useState<Set<string>>(new Set());
+
+  const toggleTool = (toolId: string) => {
+    setExpandedTools((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(toolId)) {
+        newSet.delete(toolId);
+      } else {
+        newSet.add(toolId);
+      }
+      return newSet;
+    });
+  };
+
   // Determine which activity events to show and if it's for a live loading message
   const activityForThisBubble =
-    isLastMessage && isOverallLoading ? liveActivity : historicalActivity;
-  const isLiveActivityForThisBubble = isLastMessage && isOverallLoading;
+    isLastGroup && isOverallLoading ? liveActivity : historicalActivity;
+  const isLiveActivityForThisBubble = isLastGroup && isOverallLoading;
 
   // Get current agent configuration
   const currentAgent = AVAILABLE_AGENTS.find(
@@ -247,6 +337,17 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
     currentAgent?.showActivityTimeline &&
     activityForThisBubble &&
     activityForThisBubble.length > 0;
+
+  // Combine all text content for copy functionality
+  const combinedTextContent = group.messages
+    .filter((msg) => msg.type === 'ai' && msg.content)
+    .map((msg) =>
+      typeof msg.content === 'string'
+        ? msg.content
+        : JSON.stringify(msg.content)
+    )
+    .filter((content) => content.trim())
+    .join('\n\n');
 
   return (
     <div className={`relative break-words flex flex-col group`}>
@@ -258,25 +359,60 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
           />
         </div>
       )}
-      <ReactMarkdown components={mdComponents}>
-        {typeof message.content === 'string'
-          ? message.content
-          : JSON.stringify(message.content)}
-      </ReactMarkdown>
+
+      {/* Render messages in chronological order */}
+      {group.messages.map((message, index) => {
+        if (message.type === 'ai') {
+          const toolCalls = extractToolCallsFromMessage(message);
+          const hasContent =
+            message.content &&
+            typeof message.content === 'string' &&
+            message.content.trim();
+
+          return (
+            <div key={message.id || `ai-${index}`} className="space-y-3">
+              {/* Render AI content if present */}
+              {hasContent && (
+                <ReactMarkdown components={mdComponents}>
+                  {typeof message.content === 'string'
+                    ? message.content
+                    : JSON.stringify(message.content)}
+                </ReactMarkdown>
+              )}
+
+              {/* Render tool calls immediately after the AI message that triggered them */}
+              {toolCalls.length > 0 && (
+                <div className="space-y-2">
+                  {toolCalls.map((toolCall) => (
+                    <ToolMessageDisplay
+                      key={toolCall.id}
+                      toolCall={toolCall}
+                      toolMessage={findToolMessageForCall(
+                        allMessages,
+                        toolCall.id
+                      )}
+                      isExpanded={expandedTools.has(toolCall.id)}
+                      onToggle={() => toggleTool(toolCall.id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        }
+        // Skip tool messages as they're handled by ToolMessageDisplay
+        return null;
+      })}
+
       <Button
         variant="ghost"
         size="sm"
         className="h-6 w-6 p-0 self-start mt-2 hover:bg-neutral-600/50 text-neutral-400 hover:text-neutral-200"
         onClick={() =>
-          handleCopy(
-            typeof message.content === 'string'
-              ? message.content
-              : JSON.stringify(message.content),
-            message.id!
-          )
+          handleCopy(combinedTextContent, group.primaryMessage.id!)
         }
       >
-        {copiedMessageId === message.id ? (
+        {copiedMessageId === group.primaryMessage.id ? (
           <CopyCheck className="h-3 w-3" />
         ) : (
           <Copy className="h-3 w-3" />
@@ -327,35 +463,41 @@ export function ChatMessagesView({
     }
   };
 
+  // Group messages to combine related AI responses and tool calls
+  const messageGroups = groupMessages(messages);
+
   return (
     <div className="flex flex-col h-full min-h-0">
       <ScrollArea className="flex-1 min-h-0" ref={scrollAreaRef}>
         <div className="p-4 md:p-6 space-y-2 max-w-4xl mx-auto pt-16 pb-4">
-          {messages.map((message, index) => {
-            const isLast = index === messages.length - 1;
+          {messageGroups.map((group, index) => {
+            const isLast = index === messageGroups.length - 1;
             return (
-              <div key={message.id || `msg-${index}`} className="space-y-3">
+              <div key={group.id} className="space-y-3">
                 <div
                   className={`flex items-start gap-3 ${
-                    message.type === 'human' ? 'justify-end' : ''
+                    group.type === 'human' ? 'justify-end' : ''
                   }`}
                 >
-                  {message.type === 'human' ? (
+                  {group.type === 'human' ? (
                     <HumanMessageBubble
-                      message={message}
+                      group={group}
                       mdComponents={mdComponents}
                     />
                   ) : (
                     <AiMessageBubble
-                      message={message}
-                      historicalActivity={historicalActivities[message.id!]}
-                      liveActivity={liveActivityEvents} // Pass global live events
-                      isLastMessage={isLast}
-                      isOverallLoading={isLoading} // Pass global loading state
+                      group={group}
+                      historicalActivity={
+                        historicalActivities[group.primaryMessage.id!]
+                      }
+                      liveActivity={liveActivityEvents}
+                      isLastGroup={isLast}
+                      isOverallLoading={isLoading}
                       mdComponents={mdComponents}
                       handleCopy={handleCopy}
                       copiedMessageId={copiedMessageId}
                       selectedAgentId={selectedAgentId}
+                      allMessages={messages}
                     />
                   )}
                 </div>
@@ -363,11 +505,9 @@ export function ChatMessagesView({
             );
           })}
           {isLoading &&
-            (messages.length === 0 ||
-              messages[messages.length - 1].type === 'human') && (
+            (messageGroups.length === 0 ||
+              messageGroups[messageGroups.length - 1].type === 'human') && (
               <div className="flex items-start gap-3 mt-3">
-                {' '}
-                {/* AI message row structure */}
                 <div className="relative group max-w-[85%] md:max-w-[80%] rounded-xl p-3 shadow-sm break-words bg-neutral-800 text-neutral-100 rounded-bl-none w-full min-h-[56px]">
                   {(() => {
                     const currentAgent = AVAILABLE_AGENTS.find(

@@ -10,6 +10,7 @@ import {
   Bot,
   Search,
   MessageCircle,
+  Calculator,
 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -19,7 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { AVAILABLE_AGENTS } from '@/types/agents';
+import { AVAILABLE_AGENTS, AgentId } from '@/types/agents';
+import { AVAILABLE_MODELS, DEFAULT_MODEL } from '@/types/models';
+import { getAgentById } from '@/lib/agents';
+import { isValidModelId } from '@/lib/models';
 
 // Updated InputFormProps
 interface InputFormProps {
@@ -46,13 +50,19 @@ export const InputForm: React.FC<InputFormProps> = ({
 }) => {
   const [internalInputValue, setInternalInputValue] = useState('');
   const [effort, setEffort] = useState('medium');
-  const [model, setModel] = useState('gemini-2.0-flash');
+  const [model, setModel] = useState(DEFAULT_MODEL);
 
   const handleInternalSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!internalInputValue.trim()) return;
     onSubmit(internalInputValue, effort, model, selectedAgent);
     setInternalInputValue('');
+  };
+
+  const handleModelChange = (value: string) => {
+    if (isValidModelId(value)) {
+      setModel(value);
+    }
   };
 
   const handleInternalKeyDown = (
@@ -65,9 +75,7 @@ export const InputForm: React.FC<InputFormProps> = ({
   };
 
   const isSubmitDisabled = !internalInputValue.trim() || isLoading;
-  const selectedAgentInfo = AVAILABLE_AGENTS.find(
-    (agent) => agent.id === selectedAgent
-  );
+  const selectedAgentInfo = getAgentById(selectedAgent);
 
   const getAgentIcon = (iconName: string) => {
     switch (iconName) {
@@ -75,10 +83,26 @@ export const InputForm: React.FC<InputFormProps> = ({
         return <Search className="h-4 w-4 mr-2" />;
       case 'message-circle':
         return <MessageCircle className="h-4 w-4 mr-2" />;
+      case 'calculator':
+        return <Calculator className="h-4 w-4 mr-2" />;
       default:
         return <Bot className="h-4 w-4 mr-2" />;
     }
   };
+
+  const getModelIcon = (iconName: string, iconColor: string) => {
+    switch (iconName) {
+      case 'zap':
+        return <Zap className={`h-4 w-4 mr-2 ${iconColor}`} />;
+      case 'cpu':
+        return <Cpu className={`h-4 w-4 mr-2 ${iconColor}`} />;
+      default:
+        return <Cpu className="h-4 w-4 mr-2" />;
+    }
+  };
+
+  // Show effort selector for agents that can benefit from it
+  const showEffortSelector = selectedAgent === AgentId.DEEP_RESEARCHER;
 
   return (
     <form
@@ -164,8 +188,8 @@ export const InputForm: React.FC<InputFormProps> = ({
               </Select>
             </div>
           )}
-          {/* Only show effort selector for deep researcher and when no conversation history */}
-          {selectedAgent === 'deep_researcher' && !hasHistory && (
+          {/* Show effort selector for certain agents when no conversation history */}
+          {showEffortSelector && !hasHistory && (
             <div className="flex flex-row gap-2 bg-neutral-700 border-neutral-600 text-neutral-300 focus:ring-neutral-500 rounded-xl rounded-t-sm pl-2  max-w-[100%] sm:max-w-[90%]">
               <div className="flex flex-row items-center text-sm">
                 <Brain className="h-4 w-4 mr-2" />
@@ -203,35 +227,23 @@ export const InputForm: React.FC<InputFormProps> = ({
               <Cpu className="h-4 w-4 mr-2" />
               Model
             </div>
-            <Select value={model} onValueChange={setModel}>
+            <Select value={model} onValueChange={handleModelChange}>
               <SelectTrigger className="w-[150px] bg-transparent border-none cursor-pointer">
                 <SelectValue placeholder="Model" />
               </SelectTrigger>
               <SelectContent className="bg-neutral-700 border-neutral-600 text-neutral-300 cursor-pointer">
-                <SelectItem
-                  value="gemini-2.0-flash"
-                  className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
-                >
-                  <div className="flex items-center">
-                    <Zap className="h-4 w-4 mr-2 text-yellow-400" /> 2.0 Flash
-                  </div>
-                </SelectItem>
-                <SelectItem
-                  value="gemini-2.5-flash-preview-04-17"
-                  className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
-                >
-                  <div className="flex items-center">
-                    <Zap className="h-4 w-4 mr-2 text-orange-400" /> 2.5 Flash
-                  </div>
-                </SelectItem>
-                <SelectItem
-                  value="gemini-2.5-pro-preview-05-06"
-                  className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
-                >
-                  <div className="flex items-center">
-                    <Cpu className="h-4 w-4 mr-2 text-purple-400" /> 2.5 Pro
-                  </div>
-                </SelectItem>
+                {AVAILABLE_MODELS.map((modelInfo) => (
+                  <SelectItem
+                    key={modelInfo.id}
+                    value={modelInfo.id}
+                    className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
+                  >
+                    <div className="flex items-center">
+                      {getModelIcon(modelInfo.icon, modelInfo.iconColor)}
+                      {modelInfo.name}
+                    </div>
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

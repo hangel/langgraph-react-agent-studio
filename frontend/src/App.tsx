@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { ProcessedEvent } from '@/components/ActivityTimeline';
 import { WelcomeScreen } from '@/components/WelcomeScreen';
 import { ChatMessagesView } from '@/components/ChatMessagesView';
-import { AVAILABLE_AGENTS } from '@/types/agents';
+import { AgentId, DEFAULT_AGENT } from '@/types/agents';
+import { getAgentById, isValidAgentId } from '@/lib/agents';
 
 export default function App() {
   const [processedEventsTimeline, setProcessedEventsTimeline] = useState<
@@ -13,23 +14,23 @@ export default function App() {
   const [historicalActivities, setHistoricalActivities] = useState<
     Record<string, ProcessedEvent[]>
   >({});
-  const [selectedAgentId, setSelectedAgentId] = useState('chatbot');
+  const [selectedAgentId, setSelectedAgentId] = useState(DEFAULT_AGENT);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const hasFinalizeEventOccurredRef = useRef(false);
 
   const validateAgentId = useCallback((agentId: string): string => {
-    const isValidAgent = AVAILABLE_AGENTS.some((agent) => agent.id === agentId);
-    if (!isValidAgent) {
-      console.warn(`Invalid agent ID: ${agentId}, falling back to default`);
-      return 'chatbot';
+    if (isValidAgentId(agentId)) {
+      return agentId;
     }
-    return agentId;
+    console.warn(`Invalid agent ID: ${agentId}, falling back to default`);
+    return DEFAULT_AGENT;
   }, []);
 
   const handleAgentSwitch = useCallback(
     (newAgentId: string) => {
-      if (newAgentId !== selectedAgentId) {
-        setSelectedAgentId(newAgentId);
+      const validAgentId = validateAgentId(newAgentId);
+      if (validAgentId !== selectedAgentId) {
+        setSelectedAgentId(validAgentId as AgentId);
         setProcessedEventsTimeline([]);
         setHistoricalActivities({});
         hasFinalizeEventOccurredRef.current = false;
@@ -39,7 +40,15 @@ export default function App() {
         window.location.reload();
       }
     },
-    [selectedAgentId]
+    [selectedAgentId, validateAgentId]
+  );
+
+  const handleAgentChange = useCallback(
+    (agentId: string) => {
+      const validAgentId = validateAgentId(agentId);
+      setSelectedAgentId(validAgentId as AgentId);
+    },
+    [validateAgentId]
   );
 
   const thread = useStream<{
@@ -58,9 +67,7 @@ export default function App() {
     },
     onUpdateEvent: (event: Record<string, unknown>) => {
       // Only process events for agents that have showActivityTimeline enabled
-      const currentAgent = AVAILABLE_AGENTS.find(
-        (agent) => agent.id === selectedAgentId
-      );
+      const currentAgent = getAgentById(selectedAgentId);
 
       if (!currentAgent?.showActivityTimeline) {
         return;
@@ -68,7 +75,7 @@ export default function App() {
 
       let processedEvent: ProcessedEvent | null = null;
 
-      if (selectedAgentId === 'deep_researcher') {
+      if (selectedAgentId === AgentId.DEEP_RESEARCHER) {
         // Deep researcher agent events
         if (
           'generate_query' in event &&
@@ -126,6 +133,24 @@ export default function App() {
           };
           hasFinalizeEventOccurredRef.current = true;
         }
+      }
+
+      // Handle tool call chunks for all agents
+      if (
+        'tool_call_chunks' in event &&
+        Array.isArray(event.tool_call_chunks)
+      ) {
+        // Process tool call chunks for real-time tool execution display
+        const toolChunks = event.tool_call_chunks as Array<{ name?: string }>;
+        setProcessedEventsTimeline((prevEvents) => [
+          ...prevEvents,
+          {
+            title: 'Tool Execution',
+            data: `Executing ${toolChunks
+              .map((chunk) => chunk.name || 'tool')
+              .join(', ')}`,
+          },
+        ]);
       }
 
       if (processedEvent) {
@@ -190,7 +215,7 @@ export default function App() {
       ];
 
       // Only pass research-specific parameters for deep researcher
-      if (validAgentId === 'deep_researcher') {
+      if (validAgentId === AgentId.DEEP_RESEARCHER) {
         // convert effort to, initial_search_query_count and max_research_loops
         // low means max 1 loop and 1 query
         // medium means max 3 loops and 3 queries
@@ -247,7 +272,7 @@ export default function App() {
               isLoading={thread.isLoading}
               onCancel={handleCancel}
               selectedAgent={selectedAgentId}
-              onAgentChange={setSelectedAgentId}
+              onAgentChange={handleAgentChange}
             />
           ) : (
             <ChatMessagesView
@@ -259,7 +284,7 @@ export default function App() {
               liveActivityEvents={processedEventsTimeline}
               historicalActivities={historicalActivities}
               selectedAgentId={selectedAgentId}
-              onAgentChange={setSelectedAgentId}
+              onAgentChange={handleAgentChange}
             />
           )}
         </div>
