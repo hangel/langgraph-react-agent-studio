@@ -63,8 +63,8 @@ const JsonDisplay = ({ data, title }: { data: unknown; title: string }) => (
     <h4 className="text-xs font-medium text-neutral-400 uppercase tracking-wider">
       {title}
     </h4>
-    <div className="bg-neutral-900/50 rounded-lg p-3 border border-neutral-700/50">
-      <pre className="text-xs overflow-x-auto text-neutral-200 font-mono leading-relaxed">
+    <div className="bg-neutral-900/50 rounded-lg p-3 border border-neutral-700/50 overflow-x-auto">
+      <pre className="text-xs overflow-x-auto text-neutral-200 font-mono leading-relaxed whitespace-pre-wrap break-words min-w-0">
         <code>{JSON.stringify(data, null, 2)}</code>
       </pre>
     </div>
@@ -78,25 +78,27 @@ export function ToolMessageDisplay({
   onToggle,
 }: ToolMessageDisplayProps) {
   return (
-    <div className="border border-neutral-600/40 bg-neutral-800/30 rounded-lg overflow-hidden mt-4 mb-4">
+    <div className="border border-neutral-600/40 bg-neutral-800/30 rounded-lg overflow-hidden mt-4 mb-4 min-w-0">
       <Collapsible open={isExpanded} onOpenChange={onToggle}>
         <CollapsibleTrigger asChild>
           <button className="w-full px-4 py-3 hover:bg-neutral-700/20 transition-colors text-left focus:outline-none focus:bg-neutral-700/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="p-1.5 rounded-md bg-neutral-700/50">
+            <div className="flex items-center justify-between min-w-0">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <div className="p-1.5 rounded-md bg-neutral-700/50 flex-shrink-0">
                     <Wrench className="h-3.5 w-3.5 text-neutral-300" />
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-medium text-neutral-100 text-sm">
+                  <div className="flex flex-col gap-1 min-w-0 flex-1">
+                    <span className="font-medium text-neutral-100 text-sm truncate">
                       {toolCall.name}
                     </span>
                   </div>
                 </div>
-                {getStatusBadge(toolMessage)}
+                <div className="flex-shrink-0">
+                  {getStatusBadge(toolMessage)}
+                </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0 ml-2">
                 {isExpanded ? (
                   <ChevronDown className="h-4 w-4 text-neutral-400" />
                 ) : (
@@ -107,8 +109,8 @@ export function ToolMessageDisplay({
           </button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="px-4 pb-4 space-y-4 border-t border-neutral-700/30">
-            <div className="pt-4">
+          <div className="px-4 pb-4 space-y-4 border-t border-neutral-700/30 overflow-x-auto">
+            <div className="pt-4 min-w-0">
               {/* Tool inputs */}
               {Object.keys(toolCall.args).length > 0 && (
                 <JsonDisplay data={toolCall.args} title="Input" />
@@ -122,19 +124,19 @@ export function ToolMessageDisplay({
                   </h4>
                   <div
                     className={cn(
-                      'rounded-lg p-3 text-sm border',
+                      'rounded-lg p-3 text-sm border overflow-x-auto',
                       toolMessage.is_error
                         ? 'bg-red-900/10 border-red-500/20 text-red-200'
                         : 'bg-neutral-900/50 border-neutral-700/50 text-neutral-200'
                     )}
                   >
                     {typeof toolMessage.content === 'string' ? (
-                      <pre className="whitespace-pre-wrap overflow-x-auto font-mono text-xs leading-relaxed">
+                      <pre className="whitespace-pre-wrap overflow-x-auto font-mono text-xs leading-relaxed break-words min-w-0">
                         {toolMessage.content}
                       </pre>
                     ) : (
-                      <pre className="overflow-x-auto font-mono text-xs leading-relaxed">
-                        <code>
+                      <pre className="overflow-x-auto font-mono text-xs leading-relaxed min-w-0">
+                        <code className="whitespace-pre-wrap break-words">
                           {JSON.stringify(toolMessage.content, null, 2)}
                         </code>
                       </pre>
@@ -147,8 +149,8 @@ export function ToolMessageDisplay({
               {!toolMessage && (
                 <div className="text-xs text-neutral-500 italic mt-4 p-3 bg-neutral-800/20 rounded-lg border border-neutral-700/30">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-3 w-3 animate-pulse" />
-                    Waiting for tool response...
+                    <Clock className="h-3 w-3 animate-pulse flex-shrink-0" />
+                    <span>Waiting for tool response...</span>
                   </div>
                 </div>
               )}

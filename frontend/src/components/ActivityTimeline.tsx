@@ -59,18 +59,18 @@ export function ActivityTimeline({
   }, [isLoading, processedEvents]);
 
   return (
-    <Card className="border-none rounded-lg bg-neutral-700 max-h-96">
+    <Card className="border-none rounded-lg bg-neutral-700 max-h-96 w-full min-w-0">
       <CardHeader>
-        <CardDescription className="flex items-center justify-between">
+        <CardDescription className="flex items-center justify-between min-w-0">
           <div
-            className="flex items-center justify-start text-sm w-full cursor-pointer gap-2 text-neutral-100"
+            className="flex items-center justify-start text-sm w-full cursor-pointer gap-2 text-neutral-100 min-w-0 truncate"
             onClick={() => setIsTimelineCollapsed(!isTimelineCollapsed)}
           >
             Research
             {isTimelineCollapsed ? (
-              <ChevronDown className="h-4 w-4 mr-2" />
+              <ChevronDown className="h-4 w-4 mr-2 flex-shrink-0" />
             ) : (
-              <ChevronUp className="h-4 w-4 mr-2" />
+              <ChevronUp className="h-4 w-4 mr-2 flex-shrink-0" />
             )}
           </div>
         </CardDescription>
@@ -79,22 +79,22 @@ export function ActivityTimeline({
         <ScrollArea className="max-h-96 overflow-y-auto">
           <CardContent>
             {isLoading && processedEvents.length === 0 && (
-              <div className="relative pl-8 pb-4">
+              <div className="relative pl-8 pb-4 min-w-0">
                 <div className="absolute left-3 top-3.5 h-full w-0.5 bg-neutral-800" />
                 <div className="absolute left-0.5 top-2 h-5 w-5 rounded-full bg-neutral-800 flex items-center justify-center ring-4 ring-neutral-900">
                   <Loader2 className="h-3 w-3 text-neutral-400 animate-spin" />
                 </div>
-                <div>
-                  <p className="text-sm text-neutral-300 font-medium">
+                <div className="min-w-0">
+                  <p className="text-sm text-neutral-300 font-medium truncate">
                     Searching...
                   </p>
                 </div>
               </div>
             )}
             {processedEvents.length > 0 ? (
-              <div className="space-y-0">
+              <div className="space-y-0 min-w-0">
                 {processedEvents.map((eventItem, index) => (
-                  <div key={index} className="relative pl-8 pb-4">
+                  <div key={index} className="relative pl-8 pb-4 min-w-0">
                     {index < processedEvents.length - 1 ||
                     (isLoading && index === processedEvents.length - 1) ? (
                       <div className="absolute left-3 top-3.5 h-full w-0.5 bg-neutral-600" />
@@ -102,11 +102,11 @@ export function ActivityTimeline({
                     <div className="absolute left-0.5 top-2 h-6 w-6 rounded-full bg-neutral-600 flex items-center justify-center ring-4 ring-neutral-700">
                       {getEventIcon(eventItem.title, index)}
                     </div>
-                    <div>
-                      <p className="text-sm text-neutral-200 font-medium mb-0.5">
+                    <div className="min-w-0">
+                      <p className="text-sm text-neutral-200 font-medium mb-0.5 truncate">
                         {eventItem.title}
                       </p>
-                      <p className="text-xs text-neutral-300 leading-relaxed">
+                      <p className="text-xs text-neutral-300 leading-relaxed break-words overflow-wrap-anywhere">
                         {typeof eventItem.data === 'string'
                           ? eventItem.data
                           : Array.isArray(eventItem.data)
@@ -117,12 +117,12 @@ export function ActivityTimeline({
                   </div>
                 ))}
                 {isLoading && processedEvents.length > 0 && (
-                  <div className="relative pl-8 pb-4">
+                  <div className="relative pl-8 pb-4 min-w-0">
                     <div className="absolute left-0.5 top-2 h-5 w-5 rounded-full bg-neutral-600 flex items-center justify-center ring-4 ring-neutral-700">
                       <Loader2 className="h-3 w-3 text-neutral-400 animate-spin" />
                     </div>
-                    <div>
-                      <p className="text-sm text-neutral-300 font-medium">
+                    <div className="min-w-0">
+                      <p className="text-sm text-neutral-300 font-medium truncate">
                         Searching...
                       </p>
                     </div>
@@ -130,10 +130,10 @@ export function ActivityTimeline({
                 )}
               </div>
             ) : !isLoading ? ( // Only show "No activity" if not loading and no events
-              <div className="flex flex-col items-center justify-center h-full text-neutral-500 pt-10">
-                <Info className="h-6 w-6 mb-3" />
-                <p className="text-sm">No activity to display.</p>
-                <p className="text-xs text-neutral-600 mt-1">
+              <div className="flex flex-col items-center justify-center h-full text-neutral-500 pt-10 min-w-0">
+                <Info className="h-6 w-6 mb-3 flex-shrink-0" />
+                <p className="text-sm text-center">No activity to display.</p>
+                <p className="text-xs text-neutral-600 mt-1 text-center">
                   Timeline will update during processing.
                 </p>
               </div>

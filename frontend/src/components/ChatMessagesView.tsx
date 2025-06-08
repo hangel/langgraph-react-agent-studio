@@ -19,6 +19,7 @@ import {
   findToolMessageForCall,
 } from '@/types/messages';
 import { ToolCall } from '@/types/tools';
+import { AgentId } from '@/types/agents';
 
 // Group messages to combine AI responses with their tool calls and results
 interface MessageGroup {
@@ -335,8 +336,14 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
   );
   const shouldShowActivity =
     currentAgent?.showActivityTimeline &&
-    activityForThisBubble &&
-    activityForThisBubble.length > 0;
+    (isLiveActivityForThisBubble ||
+      (activityForThisBubble && activityForThisBubble.length > 0));
+
+  // Check if we should hide tool messages for DeepResearcher
+  const shouldHideToolMessages = selectedAgentId === AgentId.DEEP_RESEARCHER;
+
+  // Check if we should hide copy button (when still loading for this message group)
+  const shouldHideCopyButton = isLastGroup && isOverallLoading;
 
   // Combine all text content for copy functionality
   const combinedTextContent = group.messages
@@ -350,11 +357,17 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
     .join('\n\n');
 
   return (
-    <div className={`relative break-words flex flex-col group`}>
+    <div
+      className={`relative break-words flex flex-col group max-w-[85%] md:max-w-[80%] w-full ${
+        shouldShowActivity
+          ? 'rounded-xl p-3 shadow-sm bg-neutral-800 text-neutral-100 rounded-bl-none min-h-[56px]'
+          : ''
+      }`}
+    >
       {shouldShowActivity && (
         <div className="mb-3 border-b border-neutral-700 pb-3 text-xs">
           <ActivityTimeline
-            processedEvents={activityForThisBubble}
+            processedEvents={activityForThisBubble || []}
             isLoading={isLiveActivityForThisBubble}
           />
         </div>
@@ -381,7 +394,7 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
               )}
 
               {/* Render tool calls immediately after the AI message that triggered them */}
-              {toolCalls.length > 0 && (
+              {!shouldHideToolMessages && toolCalls.length > 0 && (
                 <div className="space-y-2">
                   {toolCalls.map((toolCall) => (
                     <ToolMessageDisplay
@@ -404,20 +417,22 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
         return null;
       })}
 
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-6 w-6 p-0 self-start mt-2 hover:bg-neutral-600/50 text-neutral-400 hover:text-neutral-200"
-        onClick={() =>
-          handleCopy(combinedTextContent, group.primaryMessage.id!)
-        }
-      >
-        {copiedMessageId === group.primaryMessage.id ? (
-          <CopyCheck className="h-3 w-3" />
-        ) : (
-          <Copy className="h-3 w-3" />
-        )}
-      </Button>
+      {!shouldHideCopyButton && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0 self-start mt-2 hover:bg-neutral-600/50 text-neutral-400 hover:text-neutral-200"
+          onClick={() =>
+            handleCopy(combinedTextContent, group.primaryMessage.id!)
+          }
+        >
+          {copiedMessageId === group.primaryMessage.id ? (
+            <CopyCheck className="h-3 w-3" />
+          ) : (
+            <Copy className="h-3 w-3" />
+          )}
+        </Button>
+      )}
     </div>
   );
 };
@@ -512,9 +527,7 @@ export function ChatMessagesView({
                   const currentAgent = AVAILABLE_AGENTS.find(
                     (agent) => agent.id === selectedAgentId
                   );
-                  const shouldShowActivity =
-                    currentAgent?.showActivityTimeline &&
-                    liveActivityEvents.length > 0;
+                  const shouldShowActivity = currentAgent?.showActivityTimeline;
 
                   if (shouldShowActivity) {
                     return (
