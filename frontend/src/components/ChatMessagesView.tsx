@@ -1,7 +1,7 @@
 import type React from 'react';
 import type { Message } from '@langchain/langgraph-sdk';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Copy, CopyCheck } from 'lucide-react';
+import { Copy, CopyCheck } from 'lucide-react';
 import { InputForm } from '@/components/InputForm';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -516,7 +516,7 @@ export function ChatMessagesView({
                     currentAgent?.showActivityTimeline &&
                     liveActivityEvents.length > 0;
 
-                  if (!shouldShowActivity) {
+                  if (shouldShowActivity) {
                     return (
                       <div className="relative group max-w-[85%] md:max-w-[80%] rounded-xl p-3 shadow-sm break-words bg-neutral-800 text-neutral-100 rounded-bl-none w-full min-h-[56px]">
                         <div className="text-xs">
@@ -530,7 +530,11 @@ export function ChatMessagesView({
                   } else {
                     return (
                       <div className="flex items-center justify-start h-full min-h-[56px]">
-                        <Loader2 className="h-5 w-5 animate-spin text-neutral-400 mr-2" />
+                        <div className="flex justify-center items-center gap-1">
+                          <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.32s]"></div>
+                          <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.16s]"></div>
+                          <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                        </div>
                       </div>
                     );
                   }
