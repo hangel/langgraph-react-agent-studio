@@ -1,8 +1,9 @@
 # mypy: disable - error - code = "no-untyped-def,misc"
 import pathlib
+
+import fastapi.exceptions
 from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
-import fastapi.exceptions
 
 # Define the FastAPI app
 app = FastAPI()

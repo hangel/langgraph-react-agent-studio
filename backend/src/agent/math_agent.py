@@ -1,13 +1,13 @@
 import os
+
 from dotenv import load_dotenv
-from langchain_core.messages import AIMessage, HumanMessage
-from langgraph.graph import StateGraph, START, END
 from langchain_core.runnables import RunnableConfig
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 
-from agent.state import MathAgentState
 from agent.configuration import MathAgentConfiguration
+from agent.state import MathAgentState
 from tools.calculator import calculator_tool
 
 load_dotenv()
@@ -41,7 +41,7 @@ def call_model(state: MathAgentState, config: RunnableConfig) -> MathAgentState:
         Dictionary with state update, including the AI's response message
     """
     configurable = MathAgentConfiguration.from_runnable_config(config)
-    
+
     # Initialize Gemini model with tools
     llm = ChatGoogleGenerativeAI(
         model=configurable.math_model,
@@ -49,10 +49,10 @@ def call_model(state: MathAgentState, config: RunnableConfig) -> MathAgentState:
         max_retries=2,
         api_key=os.getenv("GEMINI_API_KEY"),
     )
-    
+
     # Bind the calculator tool to the model
     model_with_tools = llm.bind_tools([calculator_tool])
-    
+
     # Create a system message for the math agent
     system_message = """You are a helpful math assistant. You can solve mathematical problems and calculations.
 
@@ -65,13 +65,13 @@ For mathematical expressions and calculations, use the calculator_tool to ensure
 For non-computational math questions (like explaining concepts), you can respond directly without using tools.
 
 Always explain your approach when solving problems, and show the calculation steps clearly."""
-    
+
     # Prepare messages with system message
     messages = [{"role": "system", "content": system_message}] + state["messages"]
-    
+
     # Generate response
     response = model_with_tools.invoke(messages)
-    
+
     return {"messages": [response]}
 
 
@@ -96,7 +96,7 @@ builder.add_conditional_edges(
     {
         "tools": "tools",
         END: END,
-    }
+    },
 )
 
 # Add an edge from tools back to call_model after tool execution

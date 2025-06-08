@@ -1,13 +1,12 @@
 import math
-from typing import Union
+
 from langchain_core.tools import tool
 
 
 @tool
 def calculator_tool(expression: str) -> str:
-    """
-    Calculate the result of a mathematical expression.
-    
+    """Calculate the result of a mathematical expression.
+
     This tool can handle basic arithmetic operations including:
     - Addition (+)
     - Subtraction (-)
@@ -16,13 +15,13 @@ def calculator_tool(expression: str) -> str:
     - Exponentiation (**)
     - Parentheses for grouping
     - Basic math functions like sqrt, sin, cos, tan, log, etc.
-    
+
     Args:
         expression: A mathematical expression as a string (e.g., "2 + 3 * 4", "sqrt(16)", "sin(3.14159/2)")
-    
+
     Returns:
         The calculated result as a string, or an error message if the expression is invalid.
-    
+
     Examples:
         - "2 + 3" returns "5"
         - "sqrt(16)" returns "4.0"
@@ -55,10 +54,10 @@ def calculator_tool(expression: str) -> str:
             "floor": math.floor,
             "factorial": math.factorial,
         }
-        
+
         # Evaluate the expression safely
         result = eval(expression, safe_dict)
-        
+
         # Convert result to string, handling different number types
         if isinstance(result, (int, float)):
             # Format floats to remove unnecessary decimals
@@ -70,7 +69,7 @@ def calculator_tool(expression: str) -> str:
                 return str(result)
         else:
             return str(result)
-            
+
     except ZeroDivisionError:
         return "Error: Division by zero is not allowed."
     except ValueError as e:
@@ -80,4 +79,4 @@ def calculator_tool(expression: str) -> str:
     except SyntaxError:
         return "Error: Invalid mathematical expression syntax."
     except Exception as e:
-        return f"Error: Unable to calculate the expression - {str(e)}" 
+        return f"Error: Unable to calculate the expression - {str(e)}"

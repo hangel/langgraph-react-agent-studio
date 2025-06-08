@@ -1,14 +1,10 @@
 from __future__ import annotations
 
+import operator
 from dataclasses import dataclass, field
 from typing import TypedDict
 
 from langgraph.graph import add_messages
-from typing_extensions import Annotated
-
-
-import operator
-from dataclasses import dataclass, field
 from typing_extensions import Annotated
 
 
@@ -25,11 +21,13 @@ class OverallState(TypedDict):
 
 class ChatbotState(TypedDict):
     """State for basic chatbot functionality."""
+
     messages: Annotated[list, add_messages]
 
 
 class MathAgentState(TypedDict):
     """State for math agent functionality."""
+
     messages: Annotated[list, add_messages]
 
 
