@@ -3,8 +3,8 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Loader2,
   Activity,
@@ -15,12 +15,12 @@ import {
   Pen,
   ChevronDown,
   ChevronUp,
-} from "lucide-react";
-import { useEffect, useState } from "react";
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export interface ProcessedEvent {
   title: string;
-  data: any;
+  data: string | string[] | Record<string, unknown>;
 }
 
 interface ActivityTimelineProps {
@@ -38,15 +38,15 @@ export function ActivityTimeline({
     if (index === 0 && isLoading && processedEvents.length === 0) {
       return <Loader2 className="h-4 w-4 text-neutral-400 animate-spin" />;
     }
-    if (title.toLowerCase().includes("generating")) {
+    if (title.toLowerCase().includes('generating')) {
       return <TextSearch className="h-4 w-4 text-neutral-400" />;
-    } else if (title.toLowerCase().includes("thinking")) {
+    } else if (title.toLowerCase().includes('thinking')) {
       return <Loader2 className="h-4 w-4 text-neutral-400 animate-spin" />;
-    } else if (title.toLowerCase().includes("reflection")) {
+    } else if (title.toLowerCase().includes('reflection')) {
       return <Brain className="h-4 w-4 text-neutral-400" />;
-    } else if (title.toLowerCase().includes("research")) {
+    } else if (title.toLowerCase().includes('research')) {
       return <Search className="h-4 w-4 text-neutral-400" />;
-    } else if (title.toLowerCase().includes("finalizing")) {
+    } else if (title.toLowerCase().includes('finalizing')) {
       return <Pen className="h-4 w-4 text-neutral-400" />;
     }
     return <Activity className="h-4 w-4 text-neutral-400" />;
@@ -107,10 +107,10 @@ export function ActivityTimeline({
                         {eventItem.title}
                       </p>
                       <p className="text-xs text-neutral-300 leading-relaxed">
-                        {typeof eventItem.data === "string"
+                        {typeof eventItem.data === 'string'
                           ? eventItem.data
                           : Array.isArray(eventItem.data)
-                          ? (eventItem.data as string[]).join(", ")
+                          ? (eventItem.data as string[]).join(', ')
                           : JSON.stringify(eventItem.data)}
                       </p>
                     </div>
