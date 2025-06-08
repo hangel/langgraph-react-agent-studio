@@ -11,6 +11,7 @@ import {
   Search,
   MessageCircle,
   Calculator,
+  Wrench,
 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -85,6 +86,8 @@ export const InputForm: React.FC<InputFormProps> = ({
         return <MessageCircle className="h-4 w-4 mr-2" />;
       case 'calculator':
         return <Calculator className="h-4 w-4 mr-2" />;
+      case 'wrench':
+        return <Wrench className="h-4 w-4 mr-2" />;
       default:
         return <Bot className="h-4 w-4 mr-2" />;
     }

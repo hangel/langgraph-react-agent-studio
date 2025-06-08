@@ -2,6 +2,7 @@ export enum AgentId {
   DEEP_RESEARCHER = 'deep_researcher',
   CHATBOT = 'chatbot',
   MATH_AGENT = 'math_agent',
+  MCP_AGENT = 'mcp_agent',
 }
 
 export interface Agent {
@@ -40,6 +41,14 @@ export const AVAILABLE_AGENTS: Agent[] = [
       'Problem Solving',
       'Formula Analysis',
     ],
+    showActivityTimeline: true,
+  },
+  {
+    id: AgentId.MCP_AGENT,
+    name: 'MCP Agent',
+    description: 'Model Context Protocol agent with external tool integrations',
+    icon: 'wrench',
+    capabilities: ['Model context protocol (MCP)'],
     showActivityTimeline: true,
   },
 ];
