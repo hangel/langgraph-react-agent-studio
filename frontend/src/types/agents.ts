@@ -41,7 +41,7 @@ export const AVAILABLE_AGENTS: Agent[] = [
       'Problem Solving',
       'Formula Analysis',
     ],
-    showActivityTimeline: true,
+    showActivityTimeline: false,
   },
   {
     id: AgentId.MCP_AGENT,
@@ -49,7 +49,7 @@ export const AVAILABLE_AGENTS: Agent[] = [
     description: 'Model Context Protocol agent with external tool integrations',
     icon: 'wrench',
     capabilities: ['Model context protocol (MCP)'],
-    showActivityTimeline: true,
+    showActivityTimeline: false,
   },
 ];
 
