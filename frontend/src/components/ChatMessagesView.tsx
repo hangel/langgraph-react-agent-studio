@@ -508,30 +508,33 @@ export function ChatMessagesView({
             (messageGroups.length === 0 ||
               messageGroups[messageGroups.length - 1].type === 'human') && (
               <div className="flex items-start gap-3 mt-3">
-                <div className="relative group max-w-[85%] md:max-w-[80%] rounded-xl p-3 shadow-sm break-words bg-neutral-800 text-neutral-100 rounded-bl-none w-full min-h-[56px]">
-                  {(() => {
-                    const currentAgent = AVAILABLE_AGENTS.find(
-                      (agent) => agent.id === selectedAgentId
-                    );
-                    const shouldShowActivity =
-                      currentAgent?.showActivityTimeline &&
-                      liveActivityEvents.length > 0;
+                {(() => {
+                  const currentAgent = AVAILABLE_AGENTS.find(
+                    (agent) => agent.id === selectedAgentId
+                  );
+                  const shouldShowActivity =
+                    currentAgent?.showActivityTimeline &&
+                    liveActivityEvents.length > 0;
 
-                    return shouldShowActivity ? (
-                      <div className="text-xs">
-                        <ActivityTimeline
-                          processedEvents={liveActivityEvents}
-                          isLoading={true}
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-start h-full">
-                        <Loader2 className="h-5 w-5 animate-spin text-neutral-400 mr-2" />
-                        <span>Processing...</span>
+                  if (!shouldShowActivity) {
+                    return (
+                      <div className="relative group max-w-[85%] md:max-w-[80%] rounded-xl p-3 shadow-sm break-words bg-neutral-800 text-neutral-100 rounded-bl-none w-full min-h-[56px]">
+                        <div className="text-xs">
+                          <ActivityTimeline
+                            processedEvents={liveActivityEvents}
+                            isLoading={true}
+                          />
+                        </div>
                       </div>
                     );
-                  })()}
-                </div>
+                  } else {
+                    return (
+                      <div className="flex items-center justify-start h-full min-h-[56px]">
+                        <Loader2 className="h-5 w-5 animate-spin text-neutral-400 mr-2" />
+                      </div>
+                    );
+                  }
+                })()}
               </div>
             )}
         </div>
