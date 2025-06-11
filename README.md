@@ -1,108 +1,236 @@
-# Gemini Fullstack LangGraph Quickstart
+# 🚀 LangGraph React Agent Studio
 
-This project demonstrates a fullstack application using a React frontend and a LangGraph-powered backend agent. The agent is designed to perform comprehensive research on a user's query by dynamically generating search terms, querying the web using Google Search, reflecting on the results to identify knowledge gaps, and iteratively refining its search until it can provide a well-supported answer with citations. This application serves as an example of building research-augmented conversational AI using LangGraph and Google's Gemini models.
+_Built with ❤️ by [@artreimus](https://github.com/artreimus) from [Ylang Labs](https://github.com/ylang-labs)_
 
-![Gemini Fullstack LangGraph](./app.png)
+> **A powerful, extensible fullstack AI agent platform** - This is an enhanced fork of the original Gemini Fullstack LangGraph Quickstart, supercharged with **multiple specialized agents**, **MCP (Model Context Protocol) integration**, and **LangChain tools support**!
 
-## Features
+## 📸 Screenshots
 
-- 💬 Fullstack application with a React frontend and LangGraph backend.
-- 🧠 Powered by a LangGraph agent for advanced research and conversational AI.
-- 🔍 Dynamic search query generation using Google Gemini models.
-- 🌐 Integrated web research via Google Search API.
-- 🤔 Reflective reasoning to identify knowledge gaps and refine searches.
-- 📄 Generates answers with citations from gathered sources.
-- 🔄 Hot-reloading for both frontend and backend development during development.
+![Welcome Screen](./app-1.png)
 
-## Project Structure
+![Math Agent Results](./app-2.png)
 
-The project is divided into two main directories:
+![MCP Agent Results](./app-3.png)
 
--   `frontend/`: Contains the React application built with Vite.
--   `backend/`: Contains the LangGraph/FastAPI application, including the research agent logic.
+![Deep Researcher Results](./app-4.png)
 
-## Getting Started: Development and Local Testing
+## ✨ What Makes This Special
 
-Follow these steps to get the application running locally for development and testing.
+🎯 **Multiple Specialized Agents** - Choose from 4 powerful AI agents, each optimized for different tasks  
+🔌 **MCP Integration** - First-class support for Model Context Protocol servers  
+🛠️ **LangChain Tools** - Extensive tool ecosystem integration  
+⚡ **Real-time Streaming** - Watch your agents think and work in real-time  
+🎨 **Beautiful UI** - Modern React interface with Tailwind CSS and Radix UI
 
-**1. Prerequisites:**
+## 🤖 Available Agents
 
--   Node.js and npm (or yarn/pnpm)
--   Python 3.8+
--   **`GEMINI_API_KEY`**: The backend agent requires a Google Gemini API key.
-    1.  Navigate to the `backend/` directory.
-    2.  Create a file named `.env` by copying the `backend/.env.example` file.
-    3.  Open the `.env` file and add your Gemini API key: `GEMINI_API_KEY="YOUR_ACTUAL_API_KEY"`
+This template comes with 4 example agents to get you started:
 
-**2. Install Dependencies:**
+- **🔍 Deep Researcher** - Web research with iterative refinement
+- **💬 Chatbot** - General conversation and assistance
+- **🧮 Math Agent** - Mathematical calculations and problem-solving
+- **🔧 MCP Agent** - Tool integration via Model Context Protocol
 
-**Backend:**
+> **💡 Template Design** - These agents serve as examples to demonstrate the platform's capabilities. Use them as starting points to build your own specialized agents!
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Python 3.8+
+- **Gemini API Key** ([Get one here](https://ai.google.dev/))
+
+### 1. Clone & Setup
+
+```bash
+git clone git@github.com:Ylang-Labs/langgraph-react-agent-studio.git
+cd langgraph-react-agent-studio
+```
+
+### 2. Configure Environment
 
 ```bash
 cd backend
-pip install .
+cp .env.example .env
+# Add your GEMINI_API_KEY to the .env file
 ```
 
-**Frontend:**
+### 3. Install Dependencies
 
 ```bash
-cd frontend
-npm install
+# Backend
+cd backend && uv sync
+
+# Frontend
+cd ../frontend && npm install
 ```
 
-**3. Run Development Servers:**
-
-**Backend & Frontend:**
+### 4. Launch the Studio
 
 ```bash
+# From project root
 make dev
 ```
-This will run the backend and frontend development servers.    Open your browser and navigate to the frontend development server URL (e.g., `http://localhost:5173/app`).
 
-_Alternatively, you can run the backend and frontend development servers separately. For the backend, open a terminal in the `backend/` directory and run `langgraph dev`. The backend API will be available at `http://127.0.0.1:2024`. It will also open a browser window to the LangGraph UI. For the frontend, open a terminal in the `frontend/` directory and run `npm run dev`. The frontend will be available at `http://localhost:5173`._
+🎉 **That's it!** Open `http://localhost:5173/app` and start chatting with your AI agents!
 
-## How the Backend Agent Works (High-Level)
+## 🔌 MCP (Model Context Protocol) Integration
 
-The core of the backend is a LangGraph agent defined in `backend/src/agent/graph.py`. It follows these steps:
+This studio features cutting-edge MCP integration, allowing agents to seamlessly connect with external tools and services:
 
-![Agent Flow](./agent.png)
+### 🗂️ Filesystem Server
 
-1.  **Generate Initial Queries:** Based on your input, it generates a set of initial search queries using a Gemini model.
-2.  **Web Research:** For each query, it uses the Gemini model with the Google Search API to find relevant web pages.
-3.  **Reflection & Knowledge Gap Analysis:** The agent analyzes the search results to determine if the information is sufficient or if there are knowledge gaps. It uses a Gemini model for this reflection process.
-4.  **Iterative Refinement:** If gaps are found or the information is insufficient, it generates follow-up queries and repeats the web research and reflection steps (up to a configured maximum number of loops).
-5.  **Finalize Answer:** Once the research is deemed sufficient, the agent synthesizes the gathered information into a coherent answer, including citations from the web sources, using a Gemini model.
+- **Read/Write files** in your workspace
+- **Directory operations** and file management
+- **Secure sandboxed** file access
 
-## Deployment
+### 🔍 Brave Search Server
 
-In production, the backend server serves the optimized static frontend build. LangGraph requires a Redis instance and a Postgres database. Redis is used as a pub-sub broker to enable streaming real time output from background runs. Postgres is used to store assistants, threads, runs, persist thread state and long term memory, and to manage the state of the background task queue with 'exactly once' semantics. For more details on how to deploy the backend server, take a look at the [LangGraph Documentation](https://langchain-ai.github.io/langgraph/concepts/deployment_options/). Below is an example of how to build a Docker image that includes the optimized frontend build and the backend server and run it via `docker-compose`.
+- **Web search capabilities** for real-time information
+- **Search result processing** and filtering
+- **Citation tracking** for reliable sources
 
-_Note: For the docker-compose.yml example you need a LangSmith API key, you can get one from [LangSmith](https://smith.langchain.com/settings)._
+### ⚙️ MCP Configuration
 
-_Note: If you are not running the docker-compose.yml example or exposing the backend server to the public internet, you update the `apiUrl` in the `frontend/src/App.tsx` file your host. Currently the `apiUrl` is set to `http://localhost:8123` for docker-compose or `http://localhost:2024` for development._
+```bash
+# Required
+GEMINI_API_KEY=your_gemini_api_key_here
 
-**1. Build the Docker Image:**
+# MCP Filesystem (enabled by default)
+MCP_FILESYSTEM_ENABLED=true
+MCP_FILESYSTEM_PATH=/app/workspace
 
-   Run the following command from the **project root directory**:
-   ```bash
-   docker build -t gemini-fullstack-langgraph -f Dockerfile .
-   ```
-**2. Run the Production Server:**
+# MCP Brave Search (optional)
+MCP_BRAVE_SEARCH_ENABLED=true
+BRAVE_API_KEY=your_brave_api_key_here
+```
 
-   ```bash
-   GEMINI_API_KEY=<your_gemini_api_key> LANGSMITH_API_KEY=<your_langsmith_api_key> docker-compose up
-   ```
+## 🏗️ Architecture Overview
 
-Open your browser and navigate to `http://localhost:8123/app/` to see the application. The API will be available at `http://localhost:8123`.
+The platform is built with a modern, scalable architecture that separates concerns and enables easy extensibility:
 
-## Technologies Used
+## 🎯 Platform Features
 
-- [React](https://reactjs.org/) (with [Vite](https://vitejs.dev/)) - For the frontend user interface.
-- [Tailwind CSS](https://tailwindcss.com/) - For styling.
-- [Shadcn UI](https://ui.shadcn.com/) - For components.
-- [LangGraph](https://github.com/langchain-ai/langgraph) - For building the backend research agent.
-- [Google Gemini](https://ai.google.dev/models/gemini) - LLM for query generation, reflection, and answer synthesis.
+### ⚡ Real-time Agent Execution
 
-## License
+- **Streaming responses** with live progress tracking
+- **Activity timeline** showing agent thought processes
+- **Tool execution** visibility and results
 
-This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details. 
+### 🔧 Extensible Architecture
+
+- **Custom agent creation** - Build specialized agents for your use case
+- **Tool integration** - Connect with external APIs and services
+- **MCP protocol support** - Leverage the growing MCP ecosystem
+- **LangChain compatibility** - Use the full LangChain tools library
+
+## 🚀 Deployment
+
+### Production Architecture
+
+In production, the backend server serves the optimized static frontend build. LangGraph requires specific infrastructure components for reliable operation:
+
+- **Redis** - Used as a pub-sub broker to enable streaming real-time output from background runs
+- **PostgreSQL** - Stores assistants, threads, runs, persists thread state and long-term memory, and manages the state of the background task queue with 'exactly once' semantics
+
+For comprehensive deployment guidance, see the [LangGraph Documentation](https://langchain-ai.github.io/langgraph/concepts/deployment_options/).
+
+### Docker Deployment
+
+**1. Build the Docker Image**
+
+Run from the **project root directory**:
+
+```bash
+docker build -t langgraph-agent-studio -f Dockerfile .
+```
+
+**2. Run with Docker Compose**
+
+```bash
+GEMINI_API_KEY=<your_gemini_api_key> LANGSMITH_API_KEY=<your_langsmith_api_key> docker-compose up
+```
+
+Access the application at `http://localhost:8123/app/` - The API will be available at `http://localhost:8123`.
+
+### Configuration Notes
+
+- **LangSmith API Key**: Required for the docker-compose example. Get one from [LangSmith](https://smith.langchain.com/settings)
+- **API URL Configuration**: If not using docker-compose or exposing to public internet, update the `apiUrl` in `frontend/src/App.tsx`:
+  - Docker Compose: `http://localhost:8123`
+  - Development: `http://localhost:2024`
+
+### Production Checklist
+
+- ✅ **Environment Variables** - Secure API key management
+- ✅ **Redis Configuration** - For state management and streaming
+- ✅ **PostgreSQL Setup** - For data persistence
+- ✅ **HTTPS Configuration** - For secure communications
+- ✅ **Rate Limiting** - Protect API endpoints
+- ✅ **Monitoring** - LangSmith integration for observability
+
+## 🛡️ Security & Best Practices
+
+- **Environment Variables** - Secure API key management
+- **Input Validation** - Prevents injection attacks
+- **Rate Limiting** - Protects against abuse
+- **Sandboxed Execution** - Isolated tool operations
+- **CORS Configuration** - Secure cross-origin requests
+
+## 🤝 Contributing
+
+We love contributions! Here's how you can help:
+
+1. **🐛 Bug Reports** - Found an issue? Let us know!
+2. **💡 Feature Ideas** - Have a cool agent idea? Share it!
+3. **🔧 Code Contributions** - Submit PRs for improvements
+4. **📚 Documentation** - Help improve our docs
+5. **🧪 Testing** - Help us test new features
+
+### Development Workflow
+
+```bash
+# Fork the repo
+git clone https://github.com/YOUR_USERNAME/langgraph-react-agent-studio.git
+
+# Create feature branch
+git checkout -b feature/amazing-new-feature
+
+# Make changes and test
+make dev
+
+# Submit PR
+git push origin feature/amazing-new-feature
+```
+
+## 📚 Learn More
+
+- **[LangGraph Documentation](https://langchain-ai.github.io/langgraph/)** - Core framework
+- **[Model Context Protocol](https://modelcontextprotocol.io/)** - MCP specification
+- **[LangChain Tools](https://python.langchain.com/docs/integrations/tools/)** - Tool ecosystem
+- **[React 19](https://react.dev/)** - Frontend framework
+- **[Tailwind CSS](https://tailwindcss.com/)** - Styling system
+
+## 💖 Acknowledgments
+
+- **Original Project** - Built on the excellent [Gemini Fullstack LangGraph Quickstart](https://github.com/langchain-ai/langgraph/tree/main/examples/quickstart-fullstack)
+- **LangChain Team** - For the amazing LangGraph framework
+- **Anthropic** - For Model Context Protocol innovation
+- **Community** - For feedback, contributions, and support
+
+## 📄 License
+
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**⭐ If you find this project useful, please give it a star! ⭐**
+
+Built with ❤️ by [@artreimus](https://github.com/artreimus) from [Ylang Labs](https://github.com/ylang-labs)
+
+[🐛 Report Bug](https://github.com/artreimus/langgraph-react-agent-studio/issues) • [💡 Request Feature](https://github.com/artreimus/langgraph-react-agent-studio/issues) • [💬 Discussions](https://github.com/artreimus/langgraph-react-agent-studio/discussions)
+
+</div>
