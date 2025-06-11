@@ -12,7 +12,7 @@ services:
   langgraph-postgres:
     image: docker.io/postgres:16
     ports:
-      - "5433:5432"
+      - '5433:5432'
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -28,7 +28,7 @@ services:
   langgraph-api:
     image: gemini-fullstack-langgraph
     ports:
-      - "8123:8000"
+      - '8123:8000'
     depends_on:
       langgraph-redis:
         condition: service_healthy
@@ -39,3 +39,8 @@ services:
       LANGSMITH_API_KEY: ${LANGSMITH_API_KEY}
       REDIS_URI: redis://langgraph-redis:6379
       POSTGRES_URI: postgres://postgres:postgres@langgraph-postgres:5432/postgres?sslmode=disable
+      # MCP Configuration
+      MCP_FILESYSTEM_ENABLED: ${MCP_FILESYSTEM_ENABLED}
+      MCP_FILESYSTEM_PATH: ${MCP_FILESYSTEM_PATH}
+      MCP_BRAVE_SEARCH_ENABLED: ${MCP_BRAVE_SEARCH_ENABLED}
+      BRAVE_API_KEY: ${BRAVE_API_KEY}
