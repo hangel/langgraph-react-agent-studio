@@ -49,8 +49,6 @@ const groupMessages = (messages: Message[]): MessageGroup[] => {
       currentGroup = null;
     } else if (message.type === 'ai') {
       // Start a new AI group or continue existing one
-      const toolCalls = extractToolCallsFromMessage(message);
-
       if (!currentGroup || currentGroup.type !== 'ai_complete') {
         // Create new AI group
         currentGroup = {
@@ -58,14 +56,14 @@ const groupMessages = (messages: Message[]): MessageGroup[] => {
           type: 'ai_complete',
           messages: [message],
           primaryMessage: message,
-          toolCalls: toolCalls,
+          toolCalls: [], // Don't accumulate tool calls at group level
           toolResults: [],
         };
         groups.push(currentGroup);
       } else {
         // Add to existing AI group (for cases with multiple AI messages)
         currentGroup.messages.push(message);
-        currentGroup.toolCalls.push(...toolCalls);
+        // Don't accumulate tool calls to avoid duplication
         // Update primary message to the latest one with content
         if (
           message.content &&
@@ -413,7 +411,7 @@ const AiMessageBubble: React.FC<AiMessageBubbleProps> = ({
             </div>
           );
         }
-        // Skip tool messages as they're handled by ToolMessageDisplay
+        // Skip tool messages as they're handled by ToolMessageDisplay above
         return null;
       })}
 
@@ -467,7 +465,6 @@ export function ChatMessagesView({
 }: ChatMessagesViewProps) {
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
-  console.log('liveActivityEvents', liveActivityEvents);
   const handleCopy = async (text: string, messageId: string) => {
     try {
       await navigator.clipboard.writeText(text);
