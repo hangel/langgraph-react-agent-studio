@@ -36,7 +36,6 @@ export default function App() {
         hasFinalizeEventOccurredRef.current = false;
         // For now, just reload the page when switching agents
         // This ensures clean state reset without complex thread management
-        console.log('switching agent');
         window.location.reload();
       }
     },
@@ -199,7 +198,6 @@ export default function App() {
     ) => {
       const validAgentId = validateAgentId(agentId);
       if (!submittedInputValue.trim()) return;
-      console.log('submittedInputValue', submittedInputValue);
 
       handleAgentSwitch(validAgentId);
       setProcessedEventsTimeline([]);
