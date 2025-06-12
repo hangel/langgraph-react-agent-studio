@@ -247,7 +247,7 @@ git push origin feature/amazing-new-feature
 
 ## 💖 Acknowledgments
 
-- **Original Project** - Built on the excellent [Gemini Fullstack LangGraph Quickstart](https://github.com/langchain-ai/langgraph/tree/main/examples/quickstart-fullstack)
+- **Original Project** - Built on the excellent [Gemini Fullstack LangGraph Quickstart](https://github.com/google-gemini/gemini-fullstack-langgraph-quickstart)
 - **LangChain Team** - For the amazing LangGraph framework
 - **Anthropic** - For Model Context Protocol innovation
 - **Community** - For feedback, contributions, and support
