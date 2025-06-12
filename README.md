@@ -200,16 +200,7 @@ Access the application at `http://localhost:8123/app/` - The API will be availab
 - ✅ **Redis Configuration** - For state management and streaming
 - ✅ **PostgreSQL Setup** - For data persistence
 - ✅ **HTTPS Configuration** - For secure communications
-- ✅ **Rate Limiting** - Protect API endpoints
 - ✅ **Monitoring** - LangSmith integration for observability
-
-## 🛡️ Security & Best Practices
-
-- **Environment Variables** - Secure API key management
-- **Input Validation** - Prevents injection attacks
-- **Rate Limiting** - Protects against abuse
-- **Sandboxed Execution** - Isolated tool operations
-- **CORS Configuration** - Secure cross-origin requests
 
 ## 🤝 Contributing
 
@@ -263,7 +254,5 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 **⭐ If you find this project useful, please give it a star! ⭐**
 
 Built with ❤️ by [@artreimus](https://github.com/artreimus) from [Ylang Labs](https://github.com/ylang-labs)
-
-[🐛 Report Bug](https://github.com/artreimus/langgraph-react-agent-studio/issues) • [💡 Request Feature](https://github.com/artreimus/langgraph-react-agent-studio/issues) • [💬 Discussions](https://github.com/artreimus/langgraph-react-agent-studio/discussions)
 
 </div>
