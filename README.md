@@ -18,7 +18,7 @@ _Built with ❤️ by [@artreimus](https://github.com/artreimus) from [Ylang Lab
 
 🎯 **Multiple Specialized Agents** - Choose from 4 powerful AI agents, each optimized for different tasks  
 🔌 **MCP Integration** - First-class support for Model Context Protocol servers  
-🛠️ **LangChain Tools** - Extensive tool ecosystem integration  
+🏗️ **Built on LangChain & LangGraph** - Powered by LangChain and LangGraph for robust agentic applications  
 ⚡ **Real-time Streaming** - Watch your agents think and work in real-time  
 🎨 **Beautiful UI** - Modern React interface with Tailwind CSS and Radix UI
 
@@ -53,7 +53,28 @@ cd langgraph-react-agent-studio
 ```bash
 cd backend
 cp .env.example .env
-# Add your GEMINI_API_KEY to the .env file
+```
+
+**Required Configuration:**
+
+```bash
+# Essential - Get your API key from https://ai.google.dev/
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+**Optional MCP & Tool Configuration:**
+
+```bash
+# MCP Filesystem (enabled by default)
+MCP_FILESYSTEM_ENABLED=true
+MCP_FILESYSTEM_PATH=/app/workspace
+
+# MCP Brave Search (optional)
+MCP_BRAVE_SEARCH_ENABLED=true
+BRAVE_API_KEY=your_brave_api_key_here
+
+# LangSmith (optional - for monitoring)
+LANGSMITH_API_KEY=your_langsmith_api_key_here
 ```
 
 ### 3. Install Dependencies
