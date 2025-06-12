@@ -4,7 +4,9 @@ _Built with ❤️ by [@artreimus](https://github.com/artreimus) from [Ylang Lab
 
 > **A powerful, extensible fullstack AI agent platform** - This is an enhanced fork of the original Gemini Fullstack LangGraph Quickstart, supercharged with **multiple specialized agents**, **MCP (Model Context Protocol) integration**, and **LangChain tools support**!
 
-## 📸 Screenshots
+## 📸 Demo
+
+![Demo Video](./demo.gif)
 
 ![Welcome Screen](./app-1.png)
 
