@@ -5,7 +5,6 @@ import {
 } from './ui/collapsible';
 import { Badge } from './ui/badge';
 import {
-  ChevronDown,
   ChevronRight,
   Wrench,
   Clock,
@@ -81,7 +80,7 @@ export function ToolMessageDisplay({
     <div className="border border-neutral-600/40 bg-neutral-800/30 rounded-lg overflow-hidden mt-4 mb-4 min-w-0">
       <Collapsible open={isExpanded} onOpenChange={onToggle}>
         <CollapsibleTrigger asChild>
-          <button className="w-full px-4 py-3 hover:bg-neutral-700/20 transition-colors text-left focus:outline-none focus:bg-neutral-700/20">
+          <button className="w-full px-4 py-3 hover:bg-neutral-700/20 transition-all duration-200 text-left focus:outline-none focus:bg-neutral-700/20">
             <div className="flex items-center justify-between min-w-0">
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -99,16 +98,21 @@ export function ToolMessageDisplay({
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                {isExpanded ? (
-                  <ChevronDown className="h-4 w-4 text-neutral-400" />
-                ) : (
-                  <ChevronRight className="h-4 w-4 text-neutral-400" />
-                )}
+                <ChevronRight
+                  className={cn(
+                    'h-4 w-4 text-neutral-400 transition-transform duration-200',
+                    isExpanded && 'rotate-90'
+                  )}
+                />
               </div>
             </div>
           </button>
         </CollapsibleTrigger>
-        <CollapsibleContent>
+        <CollapsibleContent
+          className={cn(
+            'data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up'
+          )}
+        >
           <div className="px-4 pb-4 space-y-4 border-t border-neutral-700/30 overflow-x-auto">
             <div className="pt-4 min-w-0">
               {/* Tool inputs */}
