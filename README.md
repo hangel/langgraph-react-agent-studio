@@ -131,6 +131,16 @@ BRAVE_API_KEY=your_brave_api_key_here
 
 The platform is built with a modern, scalable architecture that separates concerns and enables easy extensibility:
 
+![Architecture Overview](./architecture.png)
+
+### 🏛️ Architecture Layers
+
+- **🎨 Frontend Layer** - Modern React application with TypeScript and real-time streaming UI
+- **🚀 Backend Layer** - LangGraph-powered agent system with FastAPI for REST endpoints and WebSocket streaming
+- **🏗️ Infrastructure Layer** - Redis for pub/sub streaming and PostgreSQL for state persistence and task queuing
+- **🔧 MCP Layer** - Model Context Protocol integration for extensible tool ecosystem
+- **☁️ External Services** - LLM AI providers, monitoring, and third-party API integrations
+
 ## 🎯 Platform Features
 
 ### ⚡ Real-time Agent Execution
