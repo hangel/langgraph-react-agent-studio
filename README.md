@@ -87,6 +87,10 @@ cd backend && uv sync
 
 # Frontend
 cd ../frontend && npm install
+
+# MCP Servers
+# Install MCP servers locally using npm
+npm install -g @modelcontextprotocol/server-filesystem @modelcontextprotocol/server-brave-search
 ```
 
 ### 4. Launch the Studio
