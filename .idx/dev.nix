@@ -11,7 +11,8 @@
     pkgs.gnumake
     pkgs.python311Packages.pip
     pkgs.langgraph-cli
-
+    pkgs.sudo
+    
   ];
   # Sets environment variables in the workspace
   env = {};
