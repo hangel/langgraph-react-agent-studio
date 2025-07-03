@@ -1,4 +1,4 @@
-.PHONY: help dev-frontend dev-backend dev
+:.PHONY: help dev-frontend dev-backend dev
 
 help:
 	@echo "Available commands:"
