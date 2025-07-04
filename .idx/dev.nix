@@ -13,6 +13,7 @@
     pkgs.langgraph-cli
     pkgs.sudo
     pkgs.python311Packages.uv
+    pkgs.python311Packages.langsmith
   ];
   # Sets environment variables in the workspace
   env = {};

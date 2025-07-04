@@ -175,7 +175,7 @@ For comprehensive deployment guidance, see the [LangGraph Documentation](https:/
 
 ### Docker Deployment
 
-**1. Build the Docker Image**
+1. **Build the Docker Image**
 
 Run from the **project root directory**:
 
@@ -183,7 +183,7 @@ Run from the **project root directory**:
 docker build -t langgraph-agent-studio -f Dockerfile .
 ```
 
-**2. Run with Docker Compose**
+1. **Run with Docker Compose**
 
 ```bash
 GEMINI_API_KEY=<your_gemini_api_key> LANGSMITH_API_KEY=<your_langsmith_api_key> docker-compose up
@@ -253,10 +253,12 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 
 ---
 
+```html
 <div align="center">
 
-**⭐ If you find this project useful, please give it a star! ⭐**
+⭐ **If you find this project useful, please give it a star! ⭐**
 
 Built with ❤️ by [@artreimus](https://github.com/artreimus) from [Ylang Labs](https://github.com/ylang-labs)
 
 </div>
+```
