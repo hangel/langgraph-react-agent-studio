@@ -12,7 +12,7 @@
     pkgs.python311Packages.pip
     pkgs.langgraph-cli
     pkgs.sudo
-    
+    pkgs.python311Packages.uv
   ];
   # Sets environment variables in the workspace
   env = {};
