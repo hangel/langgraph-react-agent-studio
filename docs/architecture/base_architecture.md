@@ -51,11 +51,9 @@ The platform is composed of the following key architectural layers:
          * `chatbot_graph.py`,
          * `deep_researcher.py`,
          * `math_agent.py`,
-         * `mcp_agent.py`):
-            Define the logic and flow for each specialized AI agent using __LangGraph's `StateGraph`__.
-
-   * `state.py`: Defines the `TypedDict` classes that represent the state of different agents, managing how information is passed between nodes.
-   * `tools_and_schemas.py`: Contains Pydantic models for defining tool inputs/outputs and other structured data used by agents.
+         * `mcp_agent.py`): Define the logic and flow for each specialized AI agent using __LangGraph's `StateGraph`__.
+         * `state.py`: Defines the `TypedDict` classes that represent the **state of different agents**, managing how information is passed between nodes.
+         * `tools_and_schemas.py`: Contains **Pydantic models** for defining tool inputs/outputs and other structured data used by agents.
 
 3. **Infrastructure Layer**:
 
