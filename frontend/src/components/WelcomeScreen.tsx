@@ -24,12 +24,12 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     <div className="flex flex-col items-center gap-6">
       <img
         src="./logo-icon.svg"
-        alt="Company Logo Icon"
+        alt="COBOLpro® Logo Icon"
         className="h-24 w-24 text-primary"
       />
       <div>
         <h1 className="text-5xl md:text-6xl font-semibold text-neutral-100 mb-3">
-          Welcome.
+          COBOLpro® CLIP Welcome.
         </h1>
         <p className="text-xl md:text-2xl text-neutral-400">
           How can I help you today?
@@ -47,7 +47,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       />
     </div>
     <p className="text-xs text-neutral-500">
-      Powered by LangChain and LangGraph.
+      Powered by LangChain and LangGraph. COBOLpro® OKRocket
     </p>
   </div>
 );

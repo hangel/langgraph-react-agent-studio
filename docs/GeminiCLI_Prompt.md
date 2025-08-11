@@ -1,4 +1,4 @@
-# [I have been testing and using Gemini CLI in the last weeks. Here's what my setup looks like](https://x.com/_philschmid/status/1937887668710355265)
+# [Philipp Schmid: I have been testing and using Gemini CLI in the last weeks. Here's what my setup looks like](https://x.com/_philschmid/status/1937887668710355265)
 
 # For complex tasks, I *never* ask for code first. 
 
