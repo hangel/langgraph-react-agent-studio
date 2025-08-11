@@ -5,14 +5,30 @@
 # Phase 1: Architecture Understanding & Documentation Planning
 
 ##   1. **Understand Base Architecture:**
-* Read README.md for a high-level overview.
-* Examine docker-compose.yml and Dockerfile to understand the deployment setup.
-* Review backend/pyproject.toml and frontend/package.json for dependencies and project structure.
-* Analyze backend/src/agent/app.py, backend/src/agent/chatbot_graph.py, backend/src/agent/state.py, and backend/src/agent/tools_and_schemas.py to grasp the core LangGraph agent implementation.
-* Examine frontend/src/App.tsx, frontend/src/main.tsx, and frontend/src/components/ to understand the React frontend structure and component interactions.
-* Review frontend/src/lib/agents.ts, frontend/src/lib/models.ts, frontend/src/types/ for frontend data structures and API interactions.
+* Read `README.md` for a high-level overview.
+* Examine to understand the deployment setup.
+  * `docker-compose.yml` and 
+  * `Dockerfile` 
+* Review 
+  * `backend/pyproject.toml` and 
+  * `frontend/package.json` 
+  for dependencies and project structure.
+* Analyze to grasp the core LangGraph agent implementation.
+  * `backend/src/agent/app.py`, 
+  * `backend/src/agent/chatbot_graph.py`,
+  * `backend/src/agent/state.py`, and
+  * `backend/src/agent/tools_and_schemas.py` 
+* Examine to understand the React frontend structure and component interactions.
+  * `frontend/src/App.tsx`,
+  * `frontend/src/main.tsx`, and
+  * `frontend/src/components/`
+* Review for frontend data structures and API interactions.
+  * `frontend/src/lib/agents.ts`, 
+  * `frontend/src/lib/models.ts`,
+  * `frontend/src/types/`
 
 ##   2. **Define Content for Hierarchical GEMINI MD Files:**
+
 * `docs/architecture/base_architecture.md`: Describe the overall system, its components (frontend, backend, database), and how they interact. Include a high-level data flow.
 * `docs/architecture/key_components_role.md`: Detail the purpose and responsibilities of key modules/files identified in Phase 1 (e.g., chatbot_graph.py, state.py, App.tsx, ChatMessagesView.tsx).
 * `docs/extension/frontend_extension.md`: Provide guidance on adding new UI components, integrating with new backend endpoints, and extending existing frontend logic.
@@ -22,17 +38,18 @@
 * `docs/extension/helpful_code_snippets.md`: Collect and present reusable code examples for common extension tasks (e.g., adding a new tool, creating a new agent state, making an API call from frontend).
 
 ##   3. **Identify Radical Architecture Enhancements (Optional but will consider):**
+
 * During the understanding phase, I will look for opportunities for significant architectural improvements (e.g., microservices, message queues, advanced caching). If identified, I will propose them in a separate file with clear justification and benefits.
 
 # Phase 2: Documentation Generation & Refinement
 
 ##   1. **Create Directory Structure**: 
 
-* Create the docs/architecture/ and docs/extension/ directories.
+* Create the `docs/architecture/` and `docs/extension/` directories.
 
 ##   2. **Generate Content**: 
 
-* Write the content for each markdown file based on the understanding gained in Phase 1. I will use @ primitives to read relevant files into context as needed.
+* Write the content for each markdown file based on the understanding gained in Phase 1. I will use `@ primitives` to read relevant files into context as needed.
 
 ##   3. **Review and Refine**: 
 
@@ -50,7 +67,7 @@
 
 ##   1. **Linting/Formatting**: 
    
-* If applicable, run any project-specific linting or formatting tools on the new markdown files (I will check package.json or pyproject.toml for relevant scripts).
+* If applicable, run any project-specific `linting` or `formatting` tools on the new markdown files (I will check `package.json` or `pyproject.toml` for relevant scripts).
 
 ##   2. **Commit**:
 
