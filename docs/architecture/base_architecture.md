@@ -12,26 +12,26 @@ The platform is composed of the following key architectural layers:
 
 1.  **Frontend Layer**:
     *   **Technology**: Built with
-      * React,
-      * TypeScript,
-      * Tailwind CSS, and
-      * Radix UI.
+       * React,
+       * TypeScript,
+       * Tailwind CSS, and
+       * Radix UI.
     *   **Purpose**: Provides a _rich, interactive user interface_ for interacting with AI agents. It _handles real-time streaming of agent responses and activity timelines_.
     *   **Key Components**:
-      * `App.tsx` (main application logic, state management, LangGraph stream integration),
-      * `ChatMessagesView.tsx` (displays conversation),
-      * `InputForm.tsx` (user input),
-      * `ActivityTimeline.tsx` (agent thought process visualization), and
-      * a suite of reusable UI components (`ui/`).
+       * `App.tsx` (main application logic, state management, LangGraph stream integration),
+       * `ChatMessagesView.tsx` (displays conversation),
+       * `InputForm.tsx` (user input),
+       * `ActivityTimeline.tsx` (agent thought process visualization), and
+       * a suite of reusable UI components (`ui/`).
 
 2.  **Backend Layer**:
     *   **Technology**: Developed using 
-      * Python
-      * FastAPI
-      * LangGraph
+       * Python
+       * FastAPI
+       * LangGraph
     *   **Purpose**: Hosts the AI agents, manages their execution, and provides
-      * `REST` and
-      * `WebSocket`
+       * `REST` and
+       * `WebSocket`
        endpoints for communication with the frontend. It also serves the `static frontend assets` in production.
     *   **Key Components**:
        *  `**app.py**`: The main FastAPI application, responsible for mounting the frontend and handling API routes.
@@ -52,14 +52,14 @@ The platform is composed of the following key architectural layers:
 4.  **MCP (Model Context Protocol) Layer**:
     *  **Purpose**: Integrates external tools and services with the AI agents using the Model Context Protocol.
     *  **Key Components**:
-      *  `@modelcontextprotocol/server-filesystem`: Enables agents to interact with the filesystem (read/write files, directory operations) in a sandboxed environment.
-      *  `@modelcontextprotocol/server-brave-search`: Provides web search capabilities for agents, including search result processing and citation tracking.
-      *  `langchain-mcp-adapters`: Python library facilitating the integration of MCP servers with LangChain tools.
+       *  `@modelcontextprotocol/server-filesystem`: Enables agents to interact with the filesystem (read/write files, directory operations) in a sandboxed environment.
+       *  `@modelcontextprotocol/server-brave-search`: Provides web search capabilities for agents, including search result processing and citation tracking.
+       *  `langchain-mcp-adapters`: Python library facilitating the integration of MCP servers with LangChain tools.
 
 5.  **External Services**:
-    *   **LLM AI Providers**: Primarily Google Gemini (configured via `GEMINI_API_KEY`).
-    *   **Monitoring**: LangSmith (optional, configured via `LANGSMITH_API_KEY`) for observability and tracing of agent runs.
-    *   **Third-party API Integrations**: Any other external APIs that agents might interact with via custom tools.
+   *   **LLM AI Providers**: Primarily Google Gemini (configured via `GEMINI_API_KEY`).
+   *   **Monitoring**: LangSmith (optional, configured via `LANGSMITH_API_KEY`) for observability and tracing of agent runs.
+   *   **Third-party API Integrations**: Any other external APIs that agents might interact with via custom tools.
 
 ## Deployment Overview
 
@@ -67,7 +67,7 @@ The application is designed for Dockerized deployment.
 
 *   **Development**: `make dev` command starts the frontend (Vite dev server) and backend (FastAPI dev server) separately.
 *   **Production (Docker Compose)**:
-    *   The `Dockerfile` builds the React frontend and then incorporates it into the backend image.
-    *   `docker-compose.yml` orchestrates the `langgraph-redis`, `langgraph-postgres`, and `langgraph-api` services.
-    *   The `langgraph-api` service serves the static frontend assets and exposes the backend API.
-    *   Environment variables (e.g., `GEMINI_API_KEY`, `REDIS_URI`, `POSTGRES_URI`) are used for configuration.
+   *   The `Dockerfile` builds the React frontend and then incorporates it into the backend image.
+   *   `docker-compose.yml` orchestrates the `langgraph-redis`, `langgraph-postgres`, and `langgraph-api` services.
+   *   The `langgraph-api` service serves the static frontend assets and exposes the backend API.
+   *   Environment variables (e.g., `GEMINI_API_KEY`, `REDIS_URI`, `POSTGRES_URI`) are used for configuration.
