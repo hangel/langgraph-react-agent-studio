@@ -89,10 +89,9 @@ The application is designed for Dockerized deployment.
 * **Production (Docker Compose)**:
 
    * **`Dockerfile`**: builds the React frontend and then incorporates it into the backend image.
-   * **`docker-compose.yml`** orchestrates the
-      *  `langgraph-redis`,
-      * `langgraph-postgres`, and
-      * `langgraph-api` 
-      services.
+   * **`docker-compose.yml`** orchestrates services:
+      * **`langgraph-redis`**
+      * **`langgraph-postgres`**
+      * **`langgraph-api`**
    * **`langgraph-api`** service serves the static frontend assets and exposes the backend API.
-   * **Environment variables** (e.g., `GEMINI_API_KEY`, `REDIS_URI`, `POSTGRES_URI`) are used for configuration.
+   * **`Environment variables`** (e.g., `GEMINI_API_KEY`, `REDIS_URI`, `POSTGRES_URI`) are used for configuration.
