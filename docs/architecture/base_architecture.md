@@ -13,12 +13,14 @@ The platform is composed of the following key architectural layers:
 1.  **Frontend Layer**:
 
     *   **Technology**: Built with
+    
        * React,
        * TypeScript,
        * Tailwind CSS, and
        * Radix UI.
     *   **Purpose**: Provides a _rich, interactive user interface_ for interacting with AI agents. It _handles real-time streaming of agent responses and activity timelines_.
     *   **Key Components**:
+    
        * `App.tsx` (main application logic, state management, LangGraph stream integration),
        * `ChatMessagesView.tsx` (displays conversation),
        * `InputForm.tsx` (user input),
@@ -27,18 +29,22 @@ The platform is composed of the following key architectural layers:
 
 2.  **Backend Layer**:
 
-    *   **Technology**: Developed using 
+    *   **Technology**: Developed using
+     
        * Python
        * FastAPI
        * LangGraph
     *   **Purpose**: Hosts the AI agents, manages their execution, and provides
+    
        * `REST` and
        * `WebSocket`
        endpoints for communication with the frontend. It also serves the `static frontend assets` in production.
     *   **Key Components**:
+    
        *  `**app.py**`: The main FastAPI application, responsible for mounting the frontend and handling API routes.
        *  `**langgraph-api**` (base image): Provides the core LangGraph API functionalities.
        *  Agent-specific graphs (e.g.,
+       
           * `chatbot_graph.py`,
           * `deep_researcher.py`,
           * `math_agent.py`,
@@ -56,6 +62,7 @@ The platform is composed of the following key architectural layers:
 
     *  **Purpose**: Integrates external tools and services with the AI agents using the Model Context Protocol.
     *  **Key Components**:
+    
        *  `@modelcontextprotocol/server-filesystem`: Enables agents to interact with the filesystem (read/write files, directory operations) in a sandboxed environment.
        *  `@modelcontextprotocol/server-brave-search`: Provides web search capabilities for agents, including search result processing and citation tracking.
        *  `langchain-mcp-adapters`: Python library facilitating the integration of MCP servers with LangChain tools.
@@ -72,6 +79,7 @@ The application is designed for Dockerized deployment.
 
 *   **Development**: `make dev` command starts the frontend (Vite dev server) and backend (FastAPI dev server) separately.
 *   **Production (Docker Compose)**:
+
    *   The `Dockerfile` builds the React frontend and then incorporates it into the backend image.
    *   `docker-compose.yml` orchestrates the `langgraph-redis`, `langgraph-postgres`, and `langgraph-api` services.
    *   The `langgraph-api` service serves the static frontend assets and exposes the backend API.
