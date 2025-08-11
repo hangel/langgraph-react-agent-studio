@@ -11,30 +11,50 @@ The LangGraph React Agent Studio is a full-stack AI agent platform designed for 
 The platform is composed of the following key architectural layers:
 
 1.  **Frontend Layer**:
-    *   **Technology**: Built with React, TypeScript, Tailwind CSS, and Radix UI.
-    *   **Purpose**: Provides a rich, interactive user interface for interacting with AI agents. It handles real-time streaming of agent responses and activity timelines.
-    *   **Key Components**: `App.tsx` (main application logic, state management, LangGraph stream integration), `ChatMessagesView.tsx` (displays conversation), `InputForm.tsx` (user input), `ActivityTimeline.tsx` (agent thought process visualization), and a suite of reusable UI components (`ui/`).
+    *   **Technology**: Built with
+      * React,
+      * TypeScript,
+      * Tailwind CSS, and
+      * Radix UI.
+    *   **Purpose**: Provides a _rich, interactive user interface_ for interacting with AI agents. It _handles real-time streaming of agent responses and activity timelines_.
+    *   **Key Components**:
+      * `App.tsx` (main application logic, state management, LangGraph stream integration),
+      * `ChatMessagesView.tsx` (displays conversation),
+      * `InputForm.tsx` (user input),
+      * `ActivityTimeline.tsx` (agent thought process visualization), and
+      * a suite of reusable UI components (`ui/`).
 
 2.  **Backend Layer**:
-    *   **Technology**: Developed using Python with FastAPI and LangGraph.
-    *   **Purpose**: Hosts the AI agents, manages their execution, and provides REST and WebSocket endpoints for communication with the frontend. It also serves the static frontend assets in production.
+    *   **Technology**: Developed using 
+      * Python
+      * FastAPI
+      * LangGraph
+    *   **Purpose**: Hosts the AI agents, manages their execution, and provides
+      * `REST` and
+      * `WebSocket`
+       endpoints for communication with the frontend. It also serves the `static frontend assets` in production.
     *   **Key Components**:
-        *   `app.py`: The main FastAPI application, responsible for mounting the frontend and handling API routes.
-        *   `langgraph-api` (base image): Provides the core LangGraph API functionalities.
-        *   Agent-specific graphs (e.g., `chatbot_graph.py`, `deep_researcher.py`, `math_agent.py`, `mcp_agent.py`): Define the logic and flow for each specialized AI agent using LangGraph's `StateGraph`.
-        *   `state.py`: Defines the `TypedDict` classes that represent the state of different agents, managing how information is passed between nodes.
-        *   `tools_and_schemas.py`: Contains Pydantic models for defining tool inputs/outputs and other structured data used by agents.
+       *  `**app.py**`: The main FastAPI application, responsible for mounting the frontend and handling API routes.
+       *  `**langgraph-api**` (base image): Provides the core LangGraph API functionalities.
+       *  Agent-specific graphs (e.g.,
+          * `chatbot_graph.py`,
+          * `deep_researcher.py`,
+          * `math_agent.py`,
+          * `mcp_agent.py`): 
+          Define the logic and flow for each specialized AI agent using **LangGraph's `StateGraph`**.
+       *   `state.py`: Defines the `TypedDict` classes that represent the state of different agents, managing how information is passed between nodes.
+       *   `tools_and_schemas.py`: Contains Pydantic models for defining tool inputs/outputs and other structured data used by agents.
 
 3.  **Infrastructure Layer**:
-    *   **Redis**: Used as a pub-sub broker to enable real-time streaming of output from background agent runs to the frontend.
-    *   **PostgreSQL**: Serves as the primary data store for persisting agent state, threads, runs, and managing the background task queue with "exactly once" semantics. It also stores assistants.
+    *  `**Redis**`: Used as a pub-sub broker to enable real-time streaming of output from background agent runs to the frontend.
+    *  `**PostgreSQL**`: Serves as the primary data store for persisting agent state, threads, runs, and managing the background task queue with "exactly once" semantics. It also stores assistants.
 
 4.  **MCP (Model Context Protocol) Layer**:
-    *   **Purpose**: Integrates external tools and services with the AI agents using the Model Context Protocol.
-    *   **Key Components**:
-        *   `@modelcontextprotocol/server-filesystem`: Enables agents to interact with the filesystem (read/write files, directory operations) in a sandboxed environment.
-        *   `@modelcontextprotocol/server-brave-search`: Provides web search capabilities for agents, including search result processing and citation tracking.
-        *   `langchain-mcp-adapters`: Python library facilitating the integration of MCP servers with LangChain tools.
+    *  **Purpose**: Integrates external tools and services with the AI agents using the Model Context Protocol.
+    *  **Key Components**:
+      *  `@modelcontextprotocol/server-filesystem`: Enables agents to interact with the filesystem (read/write files, directory operations) in a sandboxed environment.
+      *  `@modelcontextprotocol/server-brave-search`: Provides web search capabilities for agents, including search result processing and citation tracking.
+      *  `langchain-mcp-adapters`: Python library facilitating the integration of MCP servers with LangChain tools.
 
 5.  **External Services**:
     *   **LLM AI Providers**: Primarily Google Gemini (configured via `GEMINI_API_KEY`).
