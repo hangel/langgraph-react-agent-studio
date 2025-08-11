@@ -11,6 +11,7 @@ The LangGraph React Agent Studio is a full-stack AI agent platform designed for 
 The platform is composed of the following key architectural layers:
 
 1.  **Frontend Layer**:
+
     *   **Technology**: Built with
        * React,
        * TypeScript,
@@ -25,6 +26,7 @@ The platform is composed of the following key architectural layers:
        * a suite of reusable UI components (`ui/`).
 
 2.  **Backend Layer**:
+
     *   **Technology**: Developed using 
        * Python
        * FastAPI
@@ -46,10 +48,12 @@ The platform is composed of the following key architectural layers:
        *   `tools_and_schemas.py`: Contains Pydantic models for defining tool inputs/outputs and other structured data used by agents.
 
 3.  **Infrastructure Layer**:
+
     *  `**Redis**`: Used as a pub-sub broker to enable real-time streaming of output from background agent runs to the frontend.
     *  `**PostgreSQL**`: Serves as the primary data store for persisting agent state, threads, runs, and managing the background task queue with "exactly once" semantics. It also stores assistants.
 
 4.  **MCP (Model Context Protocol) Layer**:
+
     *  **Purpose**: Integrates external tools and services with the AI agents using the Model Context Protocol.
     *  **Key Components**:
        *  `@modelcontextprotocol/server-filesystem`: Enables agents to interact with the filesystem (read/write files, directory operations) in a sandboxed environment.
@@ -57,6 +61,7 @@ The platform is composed of the following key architectural layers:
        *  `langchain-mcp-adapters`: Python library facilitating the integration of MCP servers with LangChain tools.
 
 5.  **External Services**:
+
    *   **LLM AI Providers**: Primarily Google Gemini (configured via `GEMINI_API_KEY`).
    *   **Monitoring**: LangSmith (optional, configured via `LANGSMITH_API_KEY`) for observability and tracing of agent runs.
    *   **Third-party API Integrations**: Any other external APIs that agents might interact with via custom tools.
