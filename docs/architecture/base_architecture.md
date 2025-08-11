@@ -57,17 +57,23 @@ The platform is composed of the following key architectural layers:
 
 3. **Infrastructure Layer**:
 
-   * `**Redis**`: Used as a pub-sub broker to enable real-time streaming of output from background agent runs to the frontend.
-   * `**PostgreSQL**`: Serves as the primary data store for persisting agent state, threads, runs, and managing the background task queue with "exactly once" semantics. It also stores assistants.
+   * **`Redis`**: Used as a pub-sub broker to enable real-time streaming of output from background agent runs to the frontend.
+   * **`PostgreSQL`**: Serves as the primary data store for 
+   
+      * **persisting agent state**,
+      * **threads**,
+      * **runs**, and
+      * managing the **background task queue** with "exactly once" semantics.
+      * It also **stores assistants**.
 
 4. **MCP (Model Context Protocol) Layer**:
 
    * **Purpose**: Integrates external tools and services with the AI agents using the Model Context Protocol.
    * **Key Components**:
 
-      * `@modelcontextprotocol/server-filesystem`: Enables agents to interact with the filesystem (read/write files, directory operations) in a sandboxed environment.
-      * `@modelcontextprotocol/server-brave-search`: Provides web search capabilities for agents, including search result processing and citation tracking.
-      * `langchain-mcp-adapters`: Python library facilitating the integration of MCP servers with LangChain tools.
+      * **`@modelcontextprotocol/server-filesystem`**: Enables agents to interact with the filesystem (read/write files, directory operations) in a sandboxed environment.
+      * **`@modelcontextprotocol/server-brave-search`**: Provides web search capabilities for agents, including search result processing and citation tracking.
+      * **`langchain-mcp-adapters`**: Python library facilitating the integration of MCP servers with LangChain tools.
 
 5. **External Services**:
 
@@ -82,7 +88,11 @@ The application is designed for Dockerized deployment.
 * **Development**: `make dev` command starts the frontend (Vite dev server) and backend (FastAPI dev server) separately.
 * **Production (Docker Compose)**:
 
-   * The `Dockerfile` builds the React frontend and then incorporates it into the backend image.
-   * `docker-compose.yml` orchestrates the `langgraph-redis`, `langgraph-postgres`, and `langgraph-api` services.
-   * The `langgraph-api` service serves the static frontend assets and exposes the backend API.
-   * Environment variables (e.g., `GEMINI_API_KEY`, `REDIS_URI`, `POSTGRES_URI`) are used for configuration.
+   * **`Dockerfile`**: builds the React frontend and then incorporates it into the backend image.
+   * **`docker-compose.yml`** orchestrates the
+      *  `langgraph-redis`,
+      * `langgraph-postgres`, and
+      * `langgraph-api` 
+      services.
+   * **`langgraph-api`** service serves the static frontend assets and exposes the backend API.
+   * **Environment variables** (e.g., `GEMINI_API_KEY`, `REDIS_URI`, `POSTGRES_URI`) are used for configuration.
