@@ -2,7 +2,7 @@
 
   Here is the detailed implementation plan for documenting this codebase:
 
-  Phase 1: Architecture Understanding & Documentation Planning
+# Phase 1: Architecture Understanding & Documentation Planning
 
    1. Understand Base Architecture:
        * Read README.md for a high-level overview.
@@ -24,7 +24,7 @@
    3. Identify Radical Architecture Enhancements (Optional but will consider):
        * During the understanding phase, I will look for opportunities for significant architectural improvements (e.g., microservices, message queues, advanced caching). If identified, I will propose them in a separate file with clear justification and benefits.
 
-  Phase 2: Documentation Generation & Refinement
+# Phase 2: Documentation Generation & Refinement
 
    1. Create Directory Structure: Create the docs/architecture/ and docs/extension/ directories.
    2. Generate Content: Write the content for each markdown file based on the understanding gained in Phase 1. I will use @ primitives to read relevant files into context as needed.
@@ -32,7 +32,7 @@
    4. Code Snippets: Extract and format relevant code snippets, ensuring they are easy to understand and apply.
    5. Self-Correction/Verification: I will use run_shell_command to verify file paths and existence, and read_file to confirm content as I generate it.
 
-  Phase 3: Verification & Commit
+# Phase 3: Verification & Commit
 
    1. Linting/Formatting: If applicable, run any project-specific linting or formatting tools on the new markdown files (I will check package.json or pyproject.toml for relevant scripts).
    2. Commit: Stage and commit the new documentation files with a clear and concise commit message.
